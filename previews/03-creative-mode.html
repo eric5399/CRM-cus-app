@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<title>Creative Mode — Preview</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cream: #EFE9D9;
+    --cream-2: #E4DCC4;
+    --green: #1F8A4C;
+    --pink: #F06CA8;
+    --orange: #E85A1F;
+    --yellow: #F5C518;
+    --ink: #0F0F0F;
+    --ink-2: #2A2A2A;
+    --rule: #0F0F0F;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 100%; height: 100%; overflow: hidden; background: #000; display: flex; align-items: center; justify-content: center; }
+  body { font-family: "Space Grotesk", system-ui, sans-serif; color: var(--ink); }
+
+  .canvas {
+    width: 1920px; height: 1080px;
+    background: var(--cream);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .display { font-family: "Archivo Black", sans-serif; letter-spacing: -.01em; line-height: .92; text-transform: uppercase; }
+  .mono { font-family: "JetBrains Mono", monospace; }
+  .body { font-family: "Space Grotesk", sans-serif; }
+
+  .slide-meta {
+    position: absolute; left: 64px; right: 64px; bottom: 40px;
+    display: flex; justify-content: space-between; align-items: center;
+    font-family: "JetBrains Mono", monospace; font-size: 24px; letter-spacing: .06em; text-transform: uppercase;
+    color: var(--ink);
+  }
+  .slide-meta .dot { width: 10px; height: 10px; background: var(--ink); border-radius: 50%; display: inline-block; margin: 0 14px; transform: translateY(-2px); }
+
+  .topbar {
+    position: absolute; left: 64px; right: 64px; top: 48px;
+    display: flex; justify-content: space-between; align-items: center;
+    font-family: "JetBrains Mono", monospace; font-size: 24px; letter-spacing: .08em; text-transform: uppercase;
+  }
+  .topbar .pill {
+    border: 2px solid var(--ink); padding: 6px 14px; border-radius: 999px;
+  }
+
+  /* Cover */
+  .s1 .title {
+    position: absolute; left: 96px; top: 50%; transform: translateY(-50%);
+    font-size: 160px; color: var(--ink); width: 900px;
+  }
+  .s1 .title .row { display: block; }
+  .s1 .poster {
+    position: absolute; right: 96px; top: 140px; bottom: 140px;
+    width: 760px;
+    background: var(--green);
+    border: 4px solid var(--ink);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .s1 .poster .switch {
+    position: relative; width: 380px; height: 380px;
+    background: var(--pink); border: 4px solid var(--ink);
+    box-shadow: 24px 24px 0 var(--orange), 24px 24px 0 4px var(--ink);
+  }
+  .s1 .poster .switch .lever {
+    position: absolute; top: 64px; left: 64px; width: 240px; height: 170px;
+    background: #FBD0E3; border: 4px solid var(--ink);
+    transform: skewY(-8deg);
+  }
+  .s1 .poster .switch .lever:after {
+    content: ""; position: absolute; left: 0; right: 0; bottom: -30px; height: 30px;
+    background: var(--pink); border: 4px solid var(--ink); border-top: 0; opacity: 0.8;
+  }
+  .s1 .poster .switch .label-on {
+    position: absolute; top: 78px; right: 60px; font-family: "Archivo Black"; font-size: 32px; color: var(--ink);
+  }
+  .s1 .poster .switch .label-off {
+    position: absolute; bottom: 48px; left: 0; right: 0; text-align: center;
+    font-family: "Archivo Black"; font-size: 32px; color: var(--ink);
+  }
+  .s1 .tagline {
+    position: absolute; left: 96px; top: 160px;
+    font-family: "JetBrains Mono", monospace; font-size: 24px; letter-spacing: .16em; text-transform: uppercase;
+    color: var(--ink);
+  }
+  .s1 .tagline span { display: inline-block; width: 60px; height: 3px; background: var(--ink); vertical-align: middle; margin-right: 18px; transform: translateY(-3px); }
+  .s1 .footnote {
+    position: absolute; left: 96px; bottom: 140px;
+    font-family: "Space Grotesk", sans-serif; font-size: 24px; color: var(--ink-2); max-width: 640px; line-height: 1.4;
+  }
+
+  /* Scale */
+  @media (max-width: 1920px) {
+    .canvas { transform: scale(calc(min(100vw / 1920, 100vh / 1080))); }
+  }
+</style>
+</head>
+<body>
+<div class="canvas">
+  <!-- Chrome -->
+  <div class="topbar">
+    <span>CRM · APP</span>
+    <span class="pill">LEADERSHIP REVIEW</span>
+    <span>2026.05</span>
+  </div>
+
+  <!-- Title -->
+  <div class="title display">
+    <span class="row">CRM客户档案</span>
+    <span class="row">APP改版评审</span>
+  </div>
+
+  <!-- Tagline -->
+  <div class="tagline"><span></span>产品需求领导评审会</div>
+
+  <!-- Poster block -->
+  <div class="poster">
+    <div class="switch">
+      <div class="lever"></div>
+      <div class="label-on">ON</div>
+      <div class="label-off">打造移动端一站式客户经营平台</div>
+    </div>
+  </div>
+
+  <!-- Footnote -->
+  <div class="footnote">好帮手产品组 · 吴文强 · 2026年5月</div>
+
+  <!-- Meta -->
+  <div class="slide-meta">
+    <span>01 / 05</span>
+    <span>好帮手 CRM<span class="dot"></span>客户档案改版</span>
+  </div>
+</div>
+</body>
+</html>

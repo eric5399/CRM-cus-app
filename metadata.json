@@ -1,0 +1,5 @@
+{
+  "name": "CRM-app改版",
+  "description": "A CRM tool for group insurance agents to manage clients, apply for services, and track interactions.",
+  "requestFramePermissions": []
+}

@@ -1,0 +1,1072 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CRM-APP改版项目汇报</title>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Space+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <style>
+    /* ===========================================
+       CSS CUSTOM PROPERTIES (BOLD SIGNAL THEME)
+       =========================================== */
+    :root {
+      --bg-primary: #1a1a1a;
+      --bg-gradient: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 50%, #1a1a1a 100%);
+      --card-bg: #FF5722;
+      --card-bg-light: #FF7043;
+      --text-primary: #ffffff;
+      --text-secondary: #999999;
+      --text-muted: #666666;
+
+      --font-display: 'Archivo Black', sans-serif;
+      --font-body: 'Space Grotesk', sans-serif;
+      --title-size: clamp(2rem, 6vw, 4.5rem);
+      --h2-size: clamp(1.5rem, 4vw, 2.5rem);
+      --h3-size: clamp(1.1rem, 2.5vw, 1.5rem);
+      --body-size: clamp(0.8rem, 1.5vw, 1.1rem);
+      --small-size: clamp(0.65rem, 1vw, 0.85rem);
+
+      --slide-padding: clamp(1.5rem, 4vw, 4rem);
+      --content-gap: clamp(1rem, 2vw, 2rem);
+
+      --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+      --duration-normal: 0.6s;
+    }
+
+    /* ===========================================
+       BASE STYLES
+       =========================================== */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-snap-type: y mandatory;
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: var(--font-body);
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      overflow-x: hidden;
+    }
+
+    /* ===========================================
+       SLIDE BASE
+       =========================================== */
+    .slide {
+      width: 100vw;
+      height: 100vh;
+      height: 100dvh;
+      overflow: hidden;
+      scroll-snap-align: start;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      background: var(--bg-gradient);
+    }
+
+    .slide-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      max-height: 100%;
+      overflow: hidden;
+      padding: var(--slide-padding);
+    }
+
+    /* ===========================================
+       TYPOGRAPHY
+       =========================================== */
+    h1 {
+      font-family: var(--font-display);
+      font-size: var(--title-size);
+      line-height: 1.1;
+      color: var(--text-primary);
+    }
+
+    h2 {
+      font-family: var(--font-display);
+      font-size: var(--h2-size);
+      line-height: 1.2;
+      color: var(--text-primary);
+      margin-bottom: var(--content-gap);
+    }
+
+    h3 {
+      font-family: var(--font-display);
+      font-size: var(--h3-size);
+      color: var(--text-primary);
+    }
+
+    p {
+      font-size: var(--body-size);
+      line-height: 1.6;
+      color: var(--text-secondary);
+    }
+
+    /* ===========================================
+       ANIMATIONS
+       =========================================== */
+    .reveal {
+      opacity: 0;
+      transform: translateY(30px);
+      transition:
+        opacity var(--duration-normal) var(--ease-out-expo),
+        transform var(--duration-normal) var(--ease-out-expo);
+    }
+
+    .slide.visible .reveal {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .reveal:nth-child(1) { transition-delay: 0.1s; }
+    .reveal:nth-child(2) { transition-delay: 0.2s; }
+    .reveal:nth-child(3) { transition-delay: 0.3s; }
+    .reveal:nth-child(4) { transition-delay: 0.4s; }
+    .reveal:nth-child(5) { transition-delay: 0.5s; }
+    .reveal:nth-child(6) { transition-delay: 0.6s; }
+
+    /* ===========================================
+       NAVIGATION DOTS
+       =========================================== */
+    .nav-dots {
+      position: fixed;
+      right: clamp(1rem, 2vw, 2rem);
+      top: 50%;
+      transform: translateY(-50%);
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      z-index: 100;
+    }
+
+    .nav-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .nav-dot.active {
+      background: var(--card-bg);
+      transform: scale(1.3);
+    }
+
+    .nav-dot:hover {
+      background: var(--text-secondary);
+    }
+
+    /* ===========================================
+       PROGRESS BAR
+       =========================================== */
+    .progress-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 3px;
+      background: var(--card-bg);
+      width: 0%;
+      z-index: 1000;
+      transition: width 0.3s ease;
+    }
+
+    /* ===========================================
+       KEYBOARD HINT
+       =========================================== */
+    .keyboard-hint {
+      position: fixed;
+      bottom: 1.5rem;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: var(--small-size);
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      opacity: 0.6;
+    }
+
+    .key {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 1.5rem;
+      height: 1.5rem;
+      padding: 0 0.4rem;
+      background: rgba(255,255,255,0.1);
+      border-radius: 4px;
+      font-size: 0.65rem;
+    }
+
+    /* ===========================================
+       SLIDE 1: TITLE SLIDE
+       =========================================== */
+    .title-slide {
+      background: var(--bg-gradient);
+    }
+
+    .title-slide::before {
+      content: '';
+      position: absolute;
+      top: -30%;
+      right: -10%;
+      width: 70%;
+      height: 200%;
+      background: var(--card-bg);
+      transform: rotate(12deg);
+      opacity: 0.95;
+    }
+
+    .title-slide .slide-number {
+      position: absolute;
+      top: var(--slide-padding);
+      left: var(--slide-padding);
+      font-family: var(--font-display);
+      font-size: clamp(4rem, 15vw, 10rem);
+      color: rgba(255,255,255,0.06);
+      line-height: 1;
+    }
+
+    .title-slide .brand-mark {
+      position: absolute;
+      top: var(--slide-padding);
+      right: var(--slide-padding);
+      font-size: var(--small-size);
+      color: rgba(255,255,255,0.4);
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+    }
+
+    .title-slide .slide-content {
+      position: relative;
+      z-index: 1;
+      align-items: flex-start;
+      justify-content: flex-end;
+      padding-bottom: clamp(3rem, 8vh, 6rem);
+    }
+
+    .title-slide h1 {
+      margin-bottom: 1rem;
+      max-width: 65%;
+    }
+
+    .title-slide .subtitle {
+      font-size: var(--h3-size);
+      color: rgba(255,255,255,0.7);
+      max-width: 50%;
+    }
+
+    .title-slide .date {
+      margin-top: 2rem;
+      font-size: var(--small-size);
+      color: rgba(255,255,255,0.5);
+    }
+
+    /* ===========================================
+       CONTENT SLIDES
+       =========================================== */
+    .content-slide {
+      background: var(--bg-gradient);
+    }
+
+    .content-slide .slide-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: var(--content-gap);
+    }
+
+    .content-slide .slide-number {
+      font-family: var(--font-display);
+      font-size: clamp(3rem, 10vw, 6rem);
+      color: rgba(255,255,255,0.08);
+      line-height: 1;
+    }
+
+    .content-slide .section-tag {
+      font-size: var(--small-size);
+      color: var(--card-bg);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 0.5rem;
+    }
+
+    .content-slide .slide-body {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+    }
+
+    /* ===========================================
+       CARD GRID
+       =========================================== */
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
+      gap: clamp(1rem, 2vw, 1.5rem);
+      margin-top: var(--content-gap);
+    }
+
+    .card {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 12px;
+      padding: clamp(1rem, 2vw, 1.5rem);
+      transition: all 0.3s ease;
+    }
+
+    .card:hover {
+      background: rgba(255,255,255,0.06);
+      border-color: rgba(255,255,255,0.15);
+      transform: translateY(-2px);
+    }
+
+    .card-icon {
+      width: clamp(2.5rem, 4vw, 3.5rem);
+      height: clamp(2.5rem, 4vw, 3.5rem);
+      background: var(--card-bg);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1rem;
+      font-size: clamp(1.25rem, 2vw, 1.75rem);
+    }
+
+    .card h3 {
+      font-size: var(--body-size);
+      margin-bottom: 0.5rem;
+    }
+
+    .card p {
+      font-size: var(--small-size);
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+
+    /* ===========================================
+       BULLET LIST
+       =========================================== */
+    .bullet-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: clamp(0.75rem, 1.5vh, 1.25rem);
+      margin-top: var(--content-gap);
+    }
+
+    .bullet-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+      font-size: var(--body-size);
+      color: var(--text-secondary);
+      line-height: 1.5;
+    }
+
+    .bullet-list li::before {
+      content: '';
+      width: 6px;
+      height: 6px;
+      background: var(--card-bg);
+      border-radius: 50%;
+      margin-top: 0.6em;
+      flex-shrink: 0;
+    }
+
+    .bullet-list li strong {
+      color: var(--text-primary);
+      font-weight: 600;
+    }
+
+    /* ===========================================
+       COMPARISON TABLE
+       =========================================== */
+    .comparison-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: clamp(0.75rem, 1.5vw, 1rem);
+      margin-top: var(--content-gap);
+    }
+
+    .comparison-item {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 12px;
+      padding: clamp(1rem, 2vw, 1.5rem);
+      text-align: center;
+    }
+
+    .comparison-item.highlight {
+      border-color: var(--card-bg);
+      background: rgba(255, 87, 34, 0.08);
+    }
+
+    .comparison-item .label {
+      font-size: var(--small-size);
+      color: var(--text-muted);
+      margin-bottom: 0.5rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .comparison-item .value {
+      font-family: var(--font-display);
+      font-size: var(--h3-size);
+      color: var(--text-primary);
+    }
+
+    .comparison-item.highlight .value {
+      color: var(--card-bg);
+    }
+
+    /* ===========================================
+       HIGHLIGHT BOX
+       =========================================== */
+    .highlight-box {
+      background: rgba(255, 87, 34, 0.1);
+      border: 1px solid rgba(255, 87, 34, 0.3);
+      border-radius: 12px;
+      padding: clamp(1rem, 2vw, 1.5rem);
+      margin-top: var(--content-gap);
+    }
+
+    .highlight-box h3 {
+      color: var(--card-bg);
+      margin-bottom: 0.75rem;
+      font-size: var(--body-size);
+    }
+
+    .highlight-box p {
+      font-size: var(--small-size);
+    }
+
+    /* ===========================================
+       LINK BOX
+       =========================================== */
+    .link-box {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 12px;
+      padding: clamp(1.5rem, 3vw, 2.5rem);
+      text-align: center;
+      margin-top: var(--content-gap);
+    }
+
+    .link-box .link-label {
+      font-size: var(--small-size);
+      color: var(--text-muted);
+      margin-bottom: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    .link-box .link-url {
+      font-family: var(--font-body);
+      font-size: clamp(1rem, 2.5vw, 1.5rem);
+      color: var(--card-bg);
+      word-break: break-all;
+    }
+
+    .link-box .link-qr {
+      margin-top: 1.5rem;
+      font-size: var(--small-size);
+      color: var(--text-muted);
+    }
+
+    /* ===========================================
+       END SLIDE
+       =========================================== */
+    .end-slide {
+      background: var(--bg-gradient);
+    }
+
+    .end-slide::before {
+      content: '';
+      position: absolute;
+      bottom: -40%;
+      left: -15%;
+      width: 80%;
+      height: 200%;
+      background: var(--card-bg);
+      transform: rotate(-15deg);
+      opacity: 0.9;
+    }
+
+    .end-slide .slide-content {
+      position: relative;
+      z-index: 1;
+      align-items: center;
+      text-align: center;
+    }
+
+    .end-slide h1 {
+      font-size: clamp(2.5rem, 8vw, 5rem);
+      margin-bottom: 1rem;
+    }
+
+    .end-slide .thanks {
+      font-size: var(--h3-size);
+      color: rgba(255,255,255,0.7);
+      margin-bottom: 2rem;
+    }
+
+    .end-slide .contact {
+      font-size: var(--body-size);
+      color: rgba(255,255,255,0.5);
+    }
+
+    /* ===========================================
+       INLINE EDITING
+       =========================================== */
+    .edit-hotzone {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 80px;
+      height: 80px;
+      z-index: 10000;
+      cursor: pointer;
+    }
+
+    .edit-toggle {
+      position: fixed;
+      top: 1rem;
+      left: 1rem;
+      width: 40px;
+      height: 40px;
+      background: var(--card-bg);
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.25rem;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+      z-index: 10001;
+    }
+
+    .edit-toggle.show {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .edit-toggle.active {
+      background: #4CAF50;
+    }
+
+    [contenteditable="true"] {
+      outline: none;
+    }
+
+    [contenteditable="true"]:focus {
+      background: rgba(255, 87, 34, 0.1);
+      border-radius: 4px;
+    }
+
+    body.edit-active [contenteditable="true"]:hover {
+      background: rgba(255, 87, 34, 0.1);
+    }
+
+    /* ===========================================
+       RESPONSIVE
+       =========================================== */
+    @media (max-height: 700px) {
+      :root {
+        --slide-padding: clamp(1rem, 3vw, 2rem);
+        --content-gap: clamp(0.75rem, 1.5vw, 1.25rem);
+      }
+    }
+
+    @media (max-height: 600px) {
+      .nav-dots, .keyboard-hint {
+        display: none;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .comparison-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .title-slide h1, .title-slide .subtitle {
+        max-width: 100%;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.2s !important;
+      }
+      html {
+        scroll-behavior: auto;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Progress Bar -->
+  <div class="progress-bar"></div>
+
+  <!-- Navigation Dots -->
+  <nav class="nav-dots"></nav>
+
+  <!-- Keyboard Hint -->
+  <div class="keyboard-hint">
+    <span class="key">↑</span><span class="key">↓</span> 导航
+    <span style="margin-left: 0.5rem;"><span class="key">Space</span> 下一页</span>
+  </div>
+
+  <!-- Edit Hotzone -->
+  <div class="edit-hotzone"></div>
+  <button class="edit-toggle" id="editToggle" title="编辑模式 (E)">✏️</button>
+
+  <!-- ===========================================
+       SLIDE 1: TITLE
+       =========================================== -->
+  <section class="slide title-slide">
+    <div class="slide-number">01</div>
+    <div class="brand-mark">CRM改版</div>
+    <div class="slide-content">
+      <h1 class="reveal" contenteditable="true">CRM-APP改版项目汇报</h1>
+      <p class="subtitle reveal" contenteditable="true">以用户为中心，打造高效、智能的客户服务体验</p>
+      <p class="date reveal">2026年4月</p>
+    </div>
+  </section>
+
+  <!-- ===========================================
+       SLIDE 2: 升级背景与建设目标
+       =========================================== -->
+  <section class="slide content-slide">
+    <div class="slide-content">
+      <div class="slide-header">
+        <div>
+          <div class="section-tag reveal">Part 01</div>
+          <h2 class="reveal" contenteditable="true">升级背景与建设目标</h2>
+        </div>
+        <div class="slide-number reveal">02</div>
+      </div>
+      <div class="slide-body">
+        <ul class="bullet-list">
+          <li class="reveal" contenteditable="true"><strong>升级背景：</strong>现有CRM系统交互体验陈旧，无法满足销售团队高效作业需求；移动端体验亟待优化</li>
+          <li class="reveal" contenteditable="true"><strong>设计规范：</strong>基于好帮手设计规范 v3.2，建立统一的设计语言和组件体系</li>
+          <li class="reveal" contenteditable="true"><strong>建设目标：</strong>打造「客户360」一体化视图，实现客户洞察、销售转化、服务养客全链路闭环</li>
+          <li class="reveal" contenteditable="true"><strong>核心价值：</strong>提升销售人效 40%，客户满意度提升 25%，数据驱动决策</li>
+        </ul>
+        <div class="card-grid">
+          <div class="card reveal">
+            <div class="card-icon">📊</div>
+            <h3 contenteditable="true">数据整合</h3>
+            <p contenteditable="true">统一客户数据源，打破信息孤岛</p>
+          </div>
+          <div class="card reveal">
+            <div class="card-icon">🎯</div>
+            <h3 contenteditable="true">效率提升</h3>
+            <p contenteditable="true">简化操作流程，减少重复工作</p>
+          </div>
+          <div class="card reveal">
+            <div class="card-icon">📱</div>
+            <h3 contenteditable="true">移动优先</h3>
+            <p contenteditable="true">随时随地高效响应客户需求</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===========================================
+       SLIDE 3: 业务调研痛点
+       =========================================== -->
+  <section class="slide content-slide">
+    <div class="slide-content">
+      <div class="slide-header">
+        <div>
+          <div class="section-tag reveal">Part 02</div>
+          <h2 class="reveal" contenteditable="true">业务调研痛点</h2>
+        </div>
+        <div class="slide-number reveal">03</div>
+      </div>
+      <div class="slide-body">
+        <div class="card-grid">
+          <div class="card reveal">
+            <div class="card-icon">🔄</div>
+            <h3 contenteditable="true">信息分散</h3>
+            <p contenteditable="true">客户信息分布在多个系统，查询效率低，易遗漏重要商机信号</p>
+          </div>
+          <div class="card reveal">
+            <div class="card-icon">📝</div>
+            <h3 contenteditable="true">流程繁琐</h3>
+            <p contenteditable="true">录入动作重复度高，审批节点多，等待时间长</p>
+          </div>
+          <div class="card reveal">
+            <div class="card-icon">📈</div>
+            <h3 contenteditable="true">数据滞后</h3>
+            <p contenteditable="true">数据更新不及时，无法支撑快速决策</p>
+          </div>
+          <div class="card reveal">
+            <div class="card-icon">🎨</div>
+            <h3 contenteditable="true">体验陈旧</h3>
+            <p contenteditable="true">界面交互落后，移动端适配差，影响使用意愿</p>
+          </div>
+        </div>
+        <div class="highlight-box reveal">
+          <h3>⚠️ 核心痛点</h3>
+          <p contenteditable="true">销售人员在开发客户时，需要在5+个系统间切换，平均每天浪费约2小时在信息整合上。</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===========================================
+       SLIDE 4: 竞品对标
+       =========================================== -->
+  <section class="slide content-slide">
+    <div class="slide-content">
+      <div class="slide-header">
+        <div>
+          <div class="section-tag reveal">Part 03</div>
+          <h2 class="reveal" contenteditable="true">竞品对标分析</h2>
+        </div>
+        <div class="slide-number reveal">04</div>
+      </div>
+      <div class="slide-body">
+        <div class="comparison-grid">
+          <div class="comparison-item reveal">
+            <div class="label">功能维度</div>
+            <div class="value" contenteditable="true">7/10</div>
+          </div>
+          <div class="comparison-item reveal">
+            <div class="label">用户体验</div>
+            <div class="value" contenteditable="true">6/10</div>
+          </div>
+          <div class="comparison-item highlight reveal">
+            <div class="label">我们的优势</div>
+            <div class="value" contenteditable="true">一体化</div>
+          </div>
+        </div>
+        <ul class="bullet-list">
+          <li class="reveal" contenteditable="true"><strong>功能对标：</strong>客户360视图、跟进记录、服务履历、BI看板等核心功能全面覆盖</li>
+          <li class="reveal" contenteditable="true"><strong>体验对标：</strong>采用最新设计规范，交互流畅度提升显著</li>
+          <li class="reveal" contenteditable="true"><strong>差异化：</strong>深度融合好帮手业务场景，服务养客模块行业领先</li>
+          <li class="reveal" contenteditable="true"><strong>迭代速度：</strong>敏捷开发，快速响应业务需求变化</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===========================================
+       SLIDE 5: 产品方案
+       =========================================== -->
+  <section class="slide content-slide">
+    <div class="slide-content">
+      <div class="slide-header">
+        <div>
+          <div class="section-tag reveal">Part 04</div>
+          <h2 class="reveal" contenteditable="true">产品方案介绍</h2>
+        </div>
+        <div class="slide-number reveal">05</div>
+      </div>
+      <div class="slide-body">
+        <ul class="bullet-list">
+          <li class="reveal" contenteditable="true"><strong>客户洞察Tab：</strong>AI智能分析，自动生成客户画像，多维风险预警</li>
+          <li class="reveal" contenteditable="true"><strong>销售转化Tab：</strong>商机管理、续保跟踪、B2C转化全流程覆盖</li>
+          <li class="reveal" contenteditable="true"><strong>服务养客Tab：</strong>员工服务/企业服务分级，权益管理、到企活动一站式服务</li>
+          <li class="reveal" contenteditable="true"><strong>技术架构：</strong>React + TypeScript + TailwindCSS + Vite，工程化程度高</li>
+        </ul>
+        <div class="card-grid">
+          <div class="card reveal">
+            <h3 contenteditable="true">客户列表页</h3>
+            <p contenteditable="true">多维度筛选、智能排序、快捷操作</p>
+          </div>
+          <div class="card reveal">
+            <h3 contenteditable="true">客户详情页</h3>
+            <p contenteditable="true">360°全景视图，Tabs快速切换</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===========================================
+       SLIDE 6: 体验链接
+       =========================================== -->
+  <section class="slide content-slide">
+    <div class="slide-content">
+      <div class="slide-header">
+        <div>
+          <div class="section-tag reveal">Part 04</div>
+          <h2 class="reveal" contenteditable="true">体验地址</h2>
+        </div>
+        <div class="slide-number reveal">06</div>
+      </div>
+      <div class="slide-body" style="justify-content: center;">
+        <div class="link-box reveal">
+          <div class="link-label">在线体验</div>
+          <div class="link-url" contenteditable="true">https://choosing-devourer-regress.ngrok-free.dev</div>
+          <div class="link-qr" contenteditable="true">扫码或复制链接在浏览器打开体验</div>
+        </div>
+        <div class="card-grid" style="margin-top: var(--content-gap);">
+          <div class="card reveal">
+            <div class="card-icon">🏠</div>
+            <h3 contenteditable="true">客户管理列表</h3>
+            <p contenteditable="true">多维度客户筛选与管理</p>
+          </div>
+          <div class="card reveal">
+            <div class="card-icon">👤</div>
+            <h3 contenteditable="true">客户详情</h3>
+            <p contenteditable="true">360°全景视图体验</p>
+          </div>
+          <div class="card reveal">
+            <div class="card-icon">📱</div>
+            <h3 contenteditable="true">移动端适配</h3>
+            <p contenteditable="true">完美支持手机端访问</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===========================================
+       SLIDE 7: THANK YOU
+       =========================================== -->
+  <section class="slide end-slide">
+    <div class="slide-content">
+      <h1 class="reveal" contenteditable="true">感谢聆听</h1>
+      <p class="thanks reveal" contenteditable="true">欢迎提问与交流</p>
+      <p class="contact reveal" contenteditable="true">CRM改版项目组 · 2026年4月</p>
+    </div>
+  </section>
+
+  <!-- ===========================================
+       JAVASCRIPT
+       =========================================== -->
+  <script>
+    /* ===========================================
+       SLIDE PRESENTATION CONTROLLER
+       =========================================== */
+    class SlidePresentation {
+      constructor() {
+        this.slides = document.querySelectorAll('.slide');
+        this.navDotsContainer = document.querySelector('.nav-dots');
+        this.progressBar = document.querySelector('.progress-bar');
+        this.currentSlide = 0;
+        this.isEditMode = false;
+
+        this.init();
+      }
+
+      init() {
+        this.setupIntersectionObserver();
+        this.setupKeyboardNav();
+        this.setupTouchNav();
+        this.setupNavDots();
+        this.setupProgressBar();
+        this.setupEditMode();
+
+        // Show first slide
+        this.slides[0].classList.add('visible');
+      }
+
+      setupIntersectionObserver() {
+        const observer = new IntersectionObserver((entries) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('visible');
+              const index = Array.from(this.slides).indexOf(entry.target);
+              this.currentSlide = index;
+              this.updateNavDots();
+              this.updateProgressBar();
+            }
+          });
+        }, { threshold: 0.5 });
+
+        this.slides.forEach(slide => observer.observe(slide));
+      }
+
+      setupKeyboardNav() {
+        document.addEventListener('keydown', (e) => {
+          if (e.target.getAttribute('contenteditable')) return;
+
+          if (e.key === 'ArrowDown' || e.key === 'ArrowRight' || e.key === ' ') {
+            e.preventDefault();
+            this.nextSlide();
+          } else if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') {
+            e.preventDefault();
+            this.prevSlide();
+          }
+        });
+      }
+
+      setupTouchNav() {
+        let startY = 0;
+        let startX = 0;
+
+        document.addEventListener('touchstart', (e) => {
+          startY = e.touches[0].clientY;
+          startX = e.touches[0].clientX;
+        });
+
+        document.addEventListener('touchend', (e) => {
+          const endY = e.changedTouches[0].clientY;
+          const endX = e.changedTouches[0].clientX;
+          const diffY = startY - endY;
+          const diffX = startX - endX;
+
+          if (Math.abs(diffY) > Math.abs(diffX) && Math.abs(diffY) > 50) {
+            if (diffY > 0) this.nextSlide();
+            else this.prevSlide();
+          }
+        });
+      }
+
+      setupNavDots() {
+        this.navDotsContainer.innerHTML = '';
+        this.slides.forEach((_, index) => {
+          const dot = document.createElement('div');
+          dot.className = 'nav-dot' + (index === 0 ? ' active' : '');
+          dot.addEventListener('click', () => this.goToSlide(index));
+          this.navDotsContainer.appendChild(dot);
+        });
+      }
+
+      updateNavDots() {
+        const dots = this.navDotsContainer.querySelectorAll('.nav-dot');
+        dots.forEach((dot, index) => {
+          dot.classList.toggle('active', index === this.currentSlide);
+        });
+      }
+
+      setupProgressBar() {
+        this.updateProgressBar();
+      }
+
+      updateProgressBar() {
+        const progress = ((this.currentSlide + 1) / this.slides.length) * 100;
+        this.progressBar.style.width = progress + '%';
+      }
+
+      nextSlide() {
+        if (this.currentSlide < this.slides.length - 1) {
+          this.goToSlide(this.currentSlide + 1);
+        }
+      }
+
+      prevSlide() {
+        if (this.currentSlide > 0) {
+          this.goToSlide(this.currentSlide - 1);
+        }
+      }
+
+      goToSlide(index) {
+        this.slides[index].scrollIntoView({ behavior: 'smooth' });
+      }
+
+      setupEditMode() {
+        const hotzone = document.querySelector('.edit-hotzone');
+        const toggle = document.getElementById('editToggle');
+        let hideTimeout = null;
+
+        hotzone.addEventListener('mouseenter', () => {
+          clearTimeout(hideTimeout);
+          toggle.classList.add('show');
+        });
+
+        hotzone.addEventListener('mouseleave', () => {
+          hideTimeout = setTimeout(() => {
+            if (!this.isEditMode) toggle.classList.remove('show');
+          }, 400);
+        });
+
+        toggle.addEventListener('mouseenter', () => {
+          clearTimeout(hideTimeout);
+        });
+
+        toggle.addEventListener('mouseleave', () => {
+          hideTimeout = setTimeout(() => {
+            if (!this.isEditMode) toggle.classList.remove('show');
+          }, 400);
+        });
+
+        hotzone.addEventListener('click', () => {
+          this.toggleEditMode();
+        });
+
+        toggle.addEventListener('click', () => {
+          this.toggleEditMode();
+        });
+
+        document.addEventListener('keydown', (e) => {
+          if (e.key === 'e' || e.key === 'E') {
+            if (!e.target.getAttribute('contenteditable')) {
+              this.toggleEditMode();
+            }
+          }
+          if (e.key === 's' && (e.ctrlKey || e.metaKey)) {
+            e.preventDefault();
+            this.exportFile();
+          }
+        });
+      }
+
+      toggleEditMode() {
+        this.isEditMode = !this.isEditMode;
+        const toggle = document.getElementById('editToggle');
+        const editables = document.querySelectorAll('[contenteditable]');
+
+        if (this.isEditMode) {
+          document.body.classList.add('edit-active');
+          toggle.classList.add('active');
+          toggle.classList.add('show');
+          editables.forEach(el => el.setAttribute('contenteditable', 'true'));
+        } else {
+          document.body.classList.remove('edit-active');
+          toggle.classList.remove('active');
+          toggle.classList.remove('show');
+          editables.forEach(el => el.setAttribute('contenteditable', 'false'));
+        }
+      }
+
+      exportFile() {
+        const editables = Array.from(document.querySelectorAll('[contenteditable]'));
+        editables.forEach(el => el.removeAttribute('contenteditable'));
+        document.body.classList.remove('edit-active');
+        document.getElementById('editToggle')?.classList.remove('active', 'show');
+
+        const html = '<!DOCTYPE html>\n' + document.documentElement.outerHTML;
+
+        document.body.classList.add('edit-active');
+        editables.forEach(el => el.setAttribute('contenteditable', 'true'));
+        document.getElementById('editToggle')?.classList.add('active');
+
+        const blob = new Blob([html], { type: 'text/html' });
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = 'CRM改版汇报.html';
+        a.click();
+        URL.revokeObjectURL(a.href);
+      }
+    }
+
+    // Initialize
+    new SlidePresentation();
+  </script>
+</body>
+</html>

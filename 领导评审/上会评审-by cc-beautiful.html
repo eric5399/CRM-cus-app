@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CRM客户档案(APP)改版评审</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800;900&display=swap');
+
+    :root {
+      --pink: #FE90E8;
+      --blue: #C0F7FE;
+      --green: #99E885;
+      --yellow: #F7CB46;
+      --cream: #FFDC8B;
+      --black: #000000;
+      --white: #FFFFFF;
+      --offwhite: #FFFDF5;
+      --border: 4px solid var(--black);
+      --shadow: 8px 8px 0px var(--black);
+      --shadow-sm: 4px 4px 0px var(--black);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html, body {
+      height: 100%;
+      overflow: hidden;
+      font-family: 'Inter', sans-serif;
+      background: var(--offwhite);
+      color: var(--black);
+    }
+
+    .slides-container { position: relative; width: 100vw; height: 100vh; }
+
+    .slide {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100vw; height: 100vh;
+      display: none;
+      padding: 60px;
+      overflow: hidden;
+    }
+    .slide.active { display: flex; }
+
+    /* ============ NAVIGATION CHROME ============ */
+    .nav-controls {
+      position: fixed; bottom: 24px; right: 24px;
+      display: flex; gap: 12px; z-index: 1000;
+    }
+    .nav-btn {
+      width: 48px; height: 48px;
+      border: 3px solid var(--black); background: var(--white);
+      cursor: pointer;
+      font-family: 'Inter', sans-serif; font-weight: 700; font-size: 18px;
+      display: flex; align-items: center; justify-content: center;
+      transition: all 0.15s ease;
+      box-shadow: var(--shadow-sm);
+    }
+    .nav-btn:hover {
+      transform: translate(-2px, -2px);
+      box-shadow: 6px 6px 0px var(--black);
+    }
+    .nav-btn:active {
+      transform: translate(2px, 2px);
+      box-shadow: 2px 2px 0px var(--black);
+    }
+    .slide-counter {
+      position: fixed; bottom: 24px; left: 24px; z-index: 1000;
+      font-family: 'Space Grotesk', monospace; font-weight: 700; font-size: 14px;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      border: 3px solid var(--black); background: var(--white);
+      padding: 10px 18px; box-shadow: var(--shadow-sm);
+    }
+
+    /* ============ UTILITY ============ */
+    .nb-card {
+      border: var(--border); background: var(--white); box-shadow: var(--shadow);
+    }
+    .nb-card-flat {
+      border: var(--border); background: var(--white);
+    }
+    .nb-label {
+      display: inline-block;
+      border: 3px solid var(--black); padding: 6px 16px;
+      font-family: 'Space Grotesk', monospace; font-size: 13px;
+      font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase;
+      background: var(--white); box-shadow: var(--shadow-sm);
+    }
+    .nb-label-pink { background: var(--pink); }
+    .nb-label-blue { background: var(--blue); }
+    .nb-label-green { background: var(--green); }
+    .nb-label-yellow { background: var(--yellow); }
+    .nb-label-cream { background: var(--cream); }
+
+    .nb-heading-xl {
+      font-family: 'Inter', sans-serif; font-weight: 900;
+      font-size: clamp(48px, 6vw, 96px);
+      line-height: 0.95; letter-spacing: -0.03em; text-transform: uppercase;
+    }
+    .nb-heading-lg {
+      font-family: 'Inter', sans-serif; font-weight: 800;
+      font-size: clamp(32px, 4vw, 64px);
+      line-height: 1.0; letter-spacing: -0.02em; text-transform: uppercase;
+    }
+    .nb-heading-md {
+      font-family: 'Inter', sans-serif; font-weight: 700;
+      font-size: clamp(24px, 2.5vw, 40px);
+      line-height: 1.1; letter-spacing: -0.01em;
+    }
+    .nb-body {
+      font-family: 'Inter', sans-serif;
+      font-size: clamp(16px, 1.2vw, 20px);
+      line-height: 1.6; font-weight: 500;
+    }
+    .nb-body-sm {
+      font-family: 'Inter', sans-serif;
+      font-size: clamp(13px, 1vw, 16px);
+      line-height: 1.5; font-weight: 500;
+    }
+    .nb-mono {
+      font-family: 'Space Grotesk', monospace;
+      font-weight: 500; font-size: 15px; letter-spacing: 0.02em;
+    }
+
+    .corner-bracket {
+      position: absolute; width: 24px; height: 24px;
+      border: 3px solid var(--black);
+    }
+    .corner-bracket.tl { border-right: none; border-bottom: none; top: 0; left: 0; }
+    .corner-bracket.tr { border-left: none; border-bottom: none; top: 0; right: 0; }
+    .corner-bracket.bl { border-right: none; border-top: none; bottom: 0; left: 0; }
+    .corner-bracket.br { border-left: none; border-top: none; bottom: 0; right: 0; }
+
+    /* ============ SLIDE 1: TITLE HERO ============ */
+    .slide-1 { flex-direction: column; justify-content: center; align-items: center; background: var(--cream); position: relative; }
+    .slide-1 .hero-frame {
+      position: relative; width: 100%; max-width: 960px;
+      border: var(--border); background: var(--offwhite);
+      padding: 72px 72px; box-shadow: var(--shadow);
+    }
+    .slide-1 .hero-label { margin-bottom: 28px; }
+    .slide-1 .hero-title { margin-bottom: 36px; }
+    .slide-1 .hero-subtitle {
+      font-family: 'Space Grotesk', monospace; font-size: 18px;
+      font-weight: 500; max-width: 600px; color: #333;
+    }
+    .slide-1 .deco-pink-rect {
+      position: absolute; top: -30px; right: 80px;
+      width: 100px; height: 100px;
+      background: var(--pink); border: var(--border);
+      box-shadow: var(--shadow-sm); transform: rotate(12deg);
+    }
+    .slide-1 .deco-green-circle {
+      position: absolute; bottom: 60px; right: 120px;
+      width: 60px; height: 60px;
+      background: var(--green); border: var(--border); border-radius: 50%;
+    }
+    .slide-1 .deco-yellow-bar {
+      position: absolute; bottom: -18px; left: 80px;
+      width: 180px; height: 36px;
+      background: var(--yellow); border: var(--border);
+      box-shadow: var(--shadow-sm); transform: rotate(-3deg);
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Space Grotesk', monospace; font-size: 13px; font-weight: 600; z-index: 5;
+    }
+    .slide-1 .deco-dots {
+      position: absolute; top: 60px; left: 60px;
+      width: 120px; height: 80px;
+      background-image: radial-gradient(circle, var(--black) 2px, transparent 2px);
+      background-size: 20px 20px; opacity: 0.4;
+    }
+
+    /* ============ SLIDE 2: THREE COLUMN — 背景·痛点·竞品 ============ */
+    .slide-2 {
+      background: var(--offwhite); flex-direction: column; justify-content: center;
+    }
+    .slide-2 .slide-header { margin-bottom: 28px; display: flex; align-items: center; gap: 16px; }
+    .slide-2 .three-col {
+      display: flex; gap: 24px; width: 100%; flex: 1; min-height: 0;
+    }
+    .slide-2 .col {
+      flex: 1; display: flex; flex-direction: column; gap: 16px; min-width: 0;
+    }
+    .slide-2 .col-card {
+      border: var(--border); background: var(--white);
+      padding: 24px 20px; box-shadow: var(--shadow-sm);
+      display: flex; flex-direction: column; gap: 14px; flex: 1;
+    }
+    .slide-2 .col-card.blue-bg { background: var(--blue); }
+    .slide-2 .col-card.green-bg { background: var(--green); }
+    .slide-2 .col-label {
+      font-family: 'Space Grotesk', monospace; font-size: 13px; font-weight: 700;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      border-bottom: 3px solid var(--black); padding-bottom: 8px;
+    }
+    .slide-2 .pain-item {
+      border: 3px solid var(--black); background: var(--offwhite);
+      padding: 12px 14px; box-shadow: 2px 2px 0px var(--black);
+    }
+    .slide-2 .pain-item .pain-num {
+      font-family: 'Inter', sans-serif; font-weight: 800; font-size: 14px; margin-bottom: 4px;
+    }
+    .slide-2 .pain-item .pain-desc {
+      font-size: 12px; line-height: 1.5; font-weight: 500; color: #333;
+    }
+    .slide-2 .comp-table {
+      width: 100%; border-collapse: collapse; font-size: 12px;
+    }
+    .slide-2 .comp-table th {
+      background: var(--black); color: var(--white);
+      font-family: 'Space Grotesk', monospace; font-size: 11px; font-weight: 600;
+      text-transform: uppercase; letter-spacing: 0.05em;
+      padding: 8px 10px; text-align: left;
+    }
+    .slide-2 .comp-table td {
+      border-bottom: 2px solid var(--black); padding: 7px 10px;
+      font-weight: 500; line-height: 1.4;
+    }
+    .slide-2 .comp-table tr:last-child td { border-bottom: 3px solid var(--black); }
+    .slide-2 .insight-row td {
+      background: var(--yellow); font-family: 'Space Grotesk', monospace;
+      font-size: 11px; font-weight: 700; text-align: center; padding: 10px;
+    }
+
+    /* ============ SLIDE 3: 设计思路 & 移动端差异化 ============ */
+    .slide-3 {
+      background: var(--offwhite); flex-direction: column; justify-content: center;
+    }
+    .slide-3 .section-head { margin-bottom: 16px; }
+    .slide-3 .section-head .subtitle { font-size: 14px; color: #555; margin-top: 4px; font-weight: 500; }
+    .slide-3 .pillars-row { display: flex; gap: 24px; width: 100%; margin-bottom: 20px; }
+    .slide-3 .pillar-card {
+      flex: 1; border: var(--border); background: var(--white);
+      padding: 24px; box-shadow: var(--shadow); position: relative;
+    }
+    .slide-3 .pillar-card:nth-child(1) .pillar-icon-box { background: var(--pink); }
+    .slide-3 .pillar-card:nth-child(2) .pillar-icon-box { background: var(--blue); }
+    .slide-3 .pillar-card:nth-child(3) .pillar-icon-box { background: var(--green); }
+    .slide-3 .pillar-icon-box {
+      width: 56px; height: 56px; border: 3px solid var(--black);
+      margin-bottom: 16px; display: flex; align-items: center; justify-content: center;
+      font-size: 24px;
+    }
+    .slide-3 .pillar-card h3 {
+      font-family: 'Inter', sans-serif; font-weight: 700; font-size: 18px;
+      margin-bottom: 10px; text-transform: uppercase;
+    }
+    .slide-3 .pillar-card ul { list-style: none; display: flex; flex-direction: column; gap: 4px; }
+    .slide-3 .pillar-card li {
+      font-size: 13px; line-height: 1.4; font-weight: 500; position: relative; padding-left: 14px;
+    }
+    .slide-3 .pillar-card li::before { content: "▸"; position: absolute; left: 0; font-size: 10px; }
+
+    .slide-3 .mobile-section { border: var(--border); background: var(--white); padding: 16px 20px; box-shadow: var(--shadow-sm); }
+    .slide-3 .mobile-label {
+      font-family: 'Space Grotesk', monospace; font-size: 12px; font-weight: 700;
+      letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 10px; color: #555;
+    }
+    .slide-3 .adv-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+    .slide-3 .adv-card {
+      border: 3px solid var(--black); padding: 14px;
+      box-shadow: 2px 2px 0px var(--black);
+    }
+    .slide-3 .adv-card:nth-child(1) { background: var(--pink); }
+    .slide-3 .adv-card:nth-child(2) { background: var(--blue); }
+    .slide-3 .adv-card:nth-child(3) { background: var(--green); }
+    .slide-3 .adv-card:nth-child(4) { background: var(--yellow); }
+    .slide-3 .adv-card .adv-title {
+      font-family: 'Inter', sans-serif; font-weight: 700; font-size: 14px; margin-bottom: 4px;
+    }
+    .slide-3 .adv-card .adv-desc { font-size: 11px; line-height: 1.4; font-weight: 500; }
+
+    /* ============ SLIDE 4: 升级目标 — STATS ============ */
+    .slide-4 {
+      background: var(--blue); flex-direction: column; justify-content: center;
+    }
+    .slide-4 .slide-header { margin-bottom: 40px; }
+    .slide-4 .metrics-section { margin-bottom: 28px; }
+    .slide-4 .metric-group-label {
+      font-family: 'Space Grotesk', monospace; font-size: 13px; font-weight: 700;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      display: inline-block; border: 3px solid var(--black);
+      background: var(--yellow); padding: 6px 16px; margin-bottom: 16px;
+      box-shadow: var(--shadow-sm);
+    }
+    .slide-4 .stats-grid {
+      display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; width: 100%;
+    }
+    .slide-4 .stat-card {
+      border: var(--border); background: var(--white);
+      padding: 32px; box-shadow: var(--shadow-sm); position: relative;
+    }
+    .slide-4 .stat-card:nth-child(odd) { transform: rotate(-1deg); }
+    .slide-4 .stat-card:nth-child(even) { transform: rotate(1deg); }
+    .slide-4 .stat-label {
+      font-family: 'Space Grotesk', monospace; font-size: 14px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 14px; color: #555;
+    }
+    .slide-4 .stat-arrow {
+      display: flex; align-items: baseline; gap: 12px; margin-bottom: 10px;
+    }
+    .slide-4 .stat-from { font-family: 'Inter', sans-serif; font-weight: 800; font-size: 28px; color: var(--black); text-decoration: line-through; opacity: 0.6; }
+    .slide-4 .stat-arrow-icon { font-weight: 900; font-size: 24px; }
+    .slide-4 .stat-to { font-family: 'Inter', sans-serif; font-weight: 900; font-size: 48px; line-height: 1; }
+    .slide-4 .stat-delta {
+      display: inline-block; font-family: 'Space Grotesk', monospace;
+      font-size: 14px; font-weight: 700;
+      border: 2px solid var(--black); background: var(--green);
+      padding: 4px 12px; letter-spacing: 0.05em;
+    }
+    .slide-4 .stat-deco {
+      position: absolute; top: 10px; right: 10px;
+      width: 14px; height: 14px; border-radius: 50%;
+      border: 2px solid var(--black);
+    }
+
+    /* ============ SLIDE 5: 扫码体验 — SPLIT + NEXT STEPS ============ */
+    .slide-5 {
+      background: var(--yellow); flex-direction: row; gap: 0; padding: 0;
+    }
+    .slide-5 .split-visual {
+      flex: 1; background: var(--black);
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      padding: 60px; position: relative; overflow: hidden;
+    }
+    .slide-5 .split-visual .visual-box {
+      width: 100%; max-width: 400px; aspect-ratio: 1;
+      border: 4px solid var(--white); background: var(--pink);
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      position: relative; gap: 12px;
+    }
+    .slide-5 .split-visual .visual-box .demo-icon {
+      font-size: 80px; line-height: 1;
+    }
+    .slide-5 .split-visual .visual-box .demo-text {
+      color: var(--black); font-family: 'Inter', sans-serif; font-weight: 800;
+      font-size: 18px; text-transform: uppercase; letter-spacing: 0.06em;
+    }
+    .slide-5 .split-visual .visual-box::after {
+      content: ''; position: absolute; top: 20px; left: 20px;
+      width: 100%; height: 100%;
+      background: var(--blue); border: 4px solid var(--white); z-index: -1;
+    }
+    .slide-5 .split-visual .visual-label {
+      position: absolute; top: 40px; right: 40px;
+      border: 3px solid var(--white); background: var(--green);
+      color: var(--black); padding: 8px 16px;
+      font-family: 'Space Grotesk', monospace; font-size: 13px;
+      font-weight: 600; transform: rotate(-4deg);
+    }
+    .slide-5 .split-content {
+      flex: 1; padding: 60px;
+      display: flex; flex-direction: column; justify-content: center;
+      gap: 28px; background: var(--offwhite); border-left: var(--border);
+    }
+    .slide-5 .content-list { list-style: none; display: flex; flex-direction: column; gap: 16px; }
+    .slide-5 .content-list li {
+      display: flex; align-items: flex-start; gap: 14px;
+      font-size: 16px; line-height: 1.5; font-weight: 500;
+    }
+    .slide-5 .content-list .list-num {
+      flex-shrink: 0; width: 36px; height: 36px;
+      border: 3px solid var(--black); background: var(--yellow);
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Space Grotesk', monospace; font-weight: 700; font-size: 14px;
+    }
+
+    /* ============ RESPONSIVE ============ */
+    @media (max-width: 1024px) {
+      .slide { padding: 32px; }
+      .slide-2 .three-col { flex-direction: column; }
+      .slide-3 .pillars-row { flex-direction: column; }
+      .slide-3 .adv-grid { grid-template-columns: repeat(2, 1fr); }
+      .slide-5 { flex-direction: column; }
+      .slide-5 .split-content { border-left: none; border-top: var(--border); }
+      .slide-4 .stats-grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 640px) {
+      .slide-3 .adv-grid { grid-template-columns: 1fr; }
+      .slide-1 .hero-frame { padding: 32px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="slide-counter" id="slideCounter">01 / 05</div>
+
+  <div class="nav-controls">
+    <button class="nav-btn" onclick="prevSlide()">&#8592;</button>
+    <button class="nav-btn" onclick="nextSlide()">&#8594;</button>
+  </div>
+
+  <div class="slides-container">
+
+    <!-- ============ SLIDE 1: 封面 ============ -->
+    <section class="slide slide-1 active">
+      <div class="deco-dots"></div>
+      <div class="hero-frame">
+        <div class="corner-bracket tl"></div>
+        <div class="corner-bracket tr"></div>
+        <div class="corner-bracket bl"></div>
+        <div class="corner-bracket br"></div>
+        <div class="nb-label nb-label-yellow hero-label">产品需求领导评审会</div>
+        <h1 class="nb-heading-xl hero-title">CRM客户档案<br>APP改版评审</h1>
+        <p class="hero-subtitle">打造移动端一站式客户经营平台 · 好帮手产品组 吴文强 · 2026年5月</p>
+        <div class="deco-pink-rect"></div>
+        <div class="deco-green-circle"></div>
+        <div class="deco-yellow-bar">上会评审</div>
+      </div>
+    </section>
+
+    <!-- ============ SLIDE 2: 背景 · 痛点 · 竞品 ============ -->
+    <section class="slide slide-2">
+      <div class="slide-header">
+        <div class="nb-label nb-label-pink">Part 01</div>
+        <h2 class="nb-heading-lg">背景 · 痛点 · 竞品</h2>
+      </div>
+
+      <div class="three-col">
+        <!-- 左栏：项目背景 -->
+        <div class="col">
+          <div class="col-card blue-bg">
+            <div class="col-label">项目背景</div>
+            <p class="nb-body-sm">
+              当前CRM APP端"客户档案模块"体验陈旧，客户信息散落在保险核心、理赔、企康、服务等多个系统，业务员日常需在5+系统间切换，平均每天浪费约<strong>1.5小时</strong>在信息搜集整合上。
+            </p>
+            <p class="nb-body-sm">
+              本次改版聚焦移动端客户360档案，基于业务员经营客户动线，重构APP端交互与信息架构，打造便捷化客户全景视图。
+            </p>
+          </div>
+        </div>
+
+        <!-- 中栏：业务员调研痛点 -->
+        <div class="col">
+          <div class="col-card">
+            <div class="col-label">司内业务员调研痛点</div>
+            <div class="pain-item">
+              <div class="pain-num">① 客户信息分散、碎片化</div>
+              <div class="pain-desc">业务员习惯用纸质笔记、微信聊天记录、个人备忘录管理客户数据，基础信息、保单、理赔、服务数据割裂，查询效率低。需统一电子化归集客户全景数据。</div>
+            </div>
+            <div class="pain-item">
+              <div class="pain-num">② 客户跟进&经营没重点</div>
+              <div class="pain-desc">缺乏系统化待办提醒与回访计划，跟进无记录、无周期管控，优质客户因遗忘回访而流失，续保/加购商机频频漏单。</div>
+            </div>
+            <div class="pain-item">
+              <div class="pain-num">③ 业务过程无沉淀</div>
+              <div class="pain-desc">销售沟通、拜访、投保、服务记录缺乏自动留存，人员变动后客户历史无从追溯，业务经验无法传承。</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 右栏：竞品对标 -->
+        <div class="col">
+          <div class="col-card green-bg">
+            <div class="col-label">外部CRM竞品对标</div>
+            <table class="comp-table">
+              <thead><tr><th>平台</th><th>设计特征</th><th>借鉴点</th></tr></thead>
+              <tbody>
+                <tr><td>Salesforce</td><td>Tab布局 + Path组件</td><td>高度可配置</td></tr>
+                <tr><td>HubSpot</td><td>卡片式 Activity 时间线</td><td>简洁清晰</td></tr>
+                <tr><td>纷享销客</td><td>指标栏 + 雷达图画像</td><td>移动优先</td></tr>
+                <tr><td>销售易</td><td>三栏 + AI 销售魔方</td><td>AI 驱动</td></tr>
+                <tr><td>Zoho CRM</td><td>Widget 仪表盘模块化</td><td>可拖拽自定义</td></tr>
+                <tr class="insight-row"><td colspan="3">头部CRM均采用"摘要仪表盘 + 分类Tab + 时间线"三层结构；AI能力已成标配</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ SLIDE 3: 设计思路 & 移动端差异化 ============ -->
+    <section class="slide slide-3">
+      <div class="section-head">
+        <div style="display:flex;align-items:center;gap:16px;">
+          <div class="nb-label nb-label-blue">Part 02</div>
+          <h2 class="nb-heading-lg">设计思路 & 移动端差异化</h2>
+        </div>
+        <p class="subtitle">围绕"看信息 → 做转化 → 推服务"三大核心动线，三个模块同等重要、并行推进</p>
+      </div>
+
+      <!-- 三大动线 -->
+      <div class="pillars-row">
+        <div class="pillar-card">
+          <div class="pillar-icon-box">🔍</div>
+          <h3>看信息 · 5大类信息聚合</h3>
+          <ul>
+            <li>基础信息：工商、股东、高管、族谱、分支、处罚</li>
+            <li>合作信息：保险合作 + 企康合作全景</li>
+            <li>理赔信息：案件列表、详情、赔付进度</li>
+            <li>客户洞察：AI画像→行业分析→风险→话术</li>
+            <li>时光轴：拜访/服务/入企记录统一呈现</li>
+          </ul>
+        </div>
+        <div class="pillar-card">
+          <div class="pillar-icon-box">🎯</div>
+          <h3>做转化 · 挖掘保费产出</h3>
+          <ul>
+            <li>保险销售：商机看板 + 续保跟踪 + B2C转化</li>
+            <li>企康销售：企业达成看板 + 员工活化转化</li>
+            <li>雷达图画像：5维客户价值分析</li>
+            <li>预警提醒：续保到期、保费异动高亮提示</li>
+          </ul>
+        </div>
+        <div class="pillar-card">
+          <div class="pillar-icon-box">🤝</div>
+          <h3>推服务 · 权益互动加深</h3>
+          <ul>
+            <li>员工服务：卡券发放追踪（研学/车主/医健/出行）</li>
+            <li>企业服务：中台审核→VP审核→发放流程</li>
+            <li>服务工具：一键转发、智能纪要、AI助手</li>
+            <li>服务目录：明码标价SKU在线申请</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- 移动端差异化 -->
+      <div class="mobile-section">
+        <div class="mobile-label">📱 移动端差异化优势 — 基于业务员外勤作业真实场景，围绕4大场景升级</div>
+        <div class="adv-grid">
+          <div class="adv-card">
+            <div class="adv-title">📋 轻量化档案阅览</div>
+            <div class="adv-desc">团体档案极简轻量化视图，屏蔽冗余后台字段，只给刚需信息；团单关键信息随身即时查；员工名册极简速查</div>
+          </div>
+          <div class="adv-card">
+            <div class="adv-title">⚡ 现场建档 & 人脉管理</div>
+            <div class="adv-desc">外勤现场快速建档拓客，简化录入语音辅助；周边客户雷达LBS快速定位；多关键对接人维护</div>
+          </div>
+          <div class="adv-card">
+            <div class="adv-title">🔔 经营留痕 & 智能预警</div>
+            <div class="adv-desc">拜访轨迹快速沉淀到档案；自动提醒续保/招标/节点，避免团客经营断档、遗忘跟进</div>
+          </div>
+          <div class="adv-card">
+            <div class="adv-title">💬 即时经营触达</div>
+            <div class="adv-desc">档案内直接完成沟通、发物料，无缝衔接客户关系维系和触达；一键触达 + 物料即时推送</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ SLIDE 4: 升级目标 ============ -->
+    <section class="slide slide-4">
+      <div class="slide-header">
+        <div class="nb-label nb-label-yellow">Part 03</div>
+        <h2 class="nb-heading-lg" style="margin-top:16px;">升级目标</h2>
+      </div>
+
+      <!-- 产品目标 -->
+      <div class="metrics-section">
+        <div class="metric-group-label">产品目标</div>
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-deco" style="background:var(--pink);"></div>
+            <div class="stat-label">CRM月使用率</div>
+            <div class="stat-arrow">
+              <span class="stat-from">51.9%</span>
+              <span class="stat-arrow-icon">→</span>
+              <span class="stat-to">≥ 60%</span>
+            </div>
+            <span class="stat-delta">↑ +8.1pp</span>
+          </div>
+          <div class="stat-card">
+            <div class="stat-deco" style="background:var(--blue);"></div>
+            <div class="stat-label">CRM月人均使用频次</div>
+            <div class="stat-arrow">
+              <span class="stat-from">8.8次</span>
+              <span class="stat-arrow-icon">→</span>
+              <span class="stat-to">≥ 11次</span>
+            </div>
+            <span class="stat-delta">↑ +25%</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 价值目标 -->
+      <div class="metrics-section">
+        <div class="metric-group-label">价值目标</div>
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-deco" style="background:var(--green);"></div>
+            <div class="stat-label">团非客户留存率</div>
+            <div class="stat-arrow">
+              <span class="stat-from">52.5%</span>
+              <span class="stat-arrow-icon">→</span>
+              <span class="stat-to">≥ 55%</span>
+            </div>
+            <span class="stat-delta">↑ +2.5pp</span>
+          </div>
+          <div class="stat-card">
+            <div class="stat-deco" style="background:var(--yellow);"></div>
+            <div class="stat-label">服务权益使用率</div>
+            <div class="stat-arrow">
+              <span class="stat-from">43.4%</span>
+              <span class="stat-arrow-icon">→</span>
+              <span class="stat-to">≥ 48%</span>
+            </div>
+            <span class="stat-delta">↑ +4.6pp</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ SLIDE 5: 扫码体验 & 下一步 ============ -->
+    <section class="slide slide-5">
+      <div class="split-visual">
+        <div class="visual-box">
+          <div class="demo-icon">📱</div>
+          <div class="demo-text">扫码体验</div>
+          <div class="demo-text" style="font-size:14px;opacity:0.7;">移动端交互原型</div>
+        </div>
+        <div class="visual-label">Live Demo</div>
+      </div>
+      <div class="split-content">
+        <div class="nb-label nb-label-green">体验</div>
+        <h2 class="nb-heading-md">扫码体验<br>移动端原型</h2>
+        <ul class="content-list">
+          <li>
+            <span class="list-num">01</span>
+            <span><strong>扫码查看APP端客户档案原型</strong> — 体验从客户列表到全景档案的完整动线</span>
+          </li>
+          <li>
+            <span class="list-num">02</span>
+            <span><strong>5大类信息聚合</strong> — 基础信息、合作信息、理赔信息、客户洞察、时光轴</span>
+          </li>
+          <li>
+            <span class="list-num">03</span>
+            <span><strong>经营转化路径</strong> — 商机看板 + 续保跟踪 + 服务权益发放全流程</span>
+          </li>
+          <li>
+            <span class="list-num">04</span>
+            <span><strong>移动端专属能力</strong> — 扫码建档、语音录入、LBS周边客户、一键触达</span>
+          </li>
+        </ul>
+        <div style="margin-top:8px;display:flex;gap:12px;flex-wrap:wrap;">
+          <span class="nb-label nb-label-pink">评审反馈收集</span>
+          <span class="nb-label nb-label-blue">下一步：排期对齐</span>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <script>
+    let currentSlide = 0;
+    const slides = document.querySelectorAll('.slide');
+    const counter = document.getElementById('slideCounter');
+    const totalSlides = slides.length;
+
+    function updateSlide() {
+      slides.forEach((slide, index) => {
+        slide.classList.toggle('active', index === currentSlide);
+      });
+      counter.textContent = String(currentSlide + 1).padStart(2, '0') + ' / ' + String(totalSlides).padStart(2, '0');
+    }
+
+    function nextSlide() {
+      currentSlide = (currentSlide + 1) % totalSlides;
+      updateSlide();
+    }
+
+    function prevSlide() {
+      currentSlide = (currentSlide - 1 + totalSlides) % totalSlides;
+      updateSlide();
+    }
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight' || e.key === ' ') {
+        e.preventDefault();
+        nextSlide();
+      } else if (e.key === 'ArrowLeft') {
+        e.preventDefault();
+        prevSlide();
+      }
+    });
+
+    let touchStartX = 0;
+    let touchEndX = 0;
+
+    document.addEventListener('touchstart', (e) => {
+      touchStartX = e.changedTouches[0].screenX;
+    });
+
+    document.addEventListener('touchend', (e) => {
+      touchEndX = e.changedTouches[0].screenX;
+      if (touchStartX - touchEndX > 50) {
+        nextSlide();
+      } else if (touchEndX - touchStartX > 50) {
+        prevSlide();
+      }
+    });
+
+    updateSlide();
+  </script>
+
+</body>
+</html>

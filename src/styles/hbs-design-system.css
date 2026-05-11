@@ -1,0 +1,553 @@
+/**
+ * 好帮手设计系统 (HBS Design System)
+ * 版本: 3.2
+ * 更新日期: 2026年4月24日
+ *
+ * 基于 好帮手设计规范.md
+ */
+
+/* ============================================
+   一、色彩系统
+   ============================================ */
+
+/* 1.1 品牌色 */
+:root {
+  /* 好帮手橙 - 品牌主色 */
+  --hbs-orange: #FF6611;
+  --hbs-orange-deep: #993A06;    /* 最深 */
+  --hbs-orange-dark: #CC4E0A;   /* 深色 */
+  --hbs-orange-normal: #FF6611; /* 标准 */
+  --hbs-orange-mid: #FFA370;    /* 中等 */
+  --hbs-orange-light: #FF8541;  /* 较浅 */
+  --hbs-orange-lighter: #FFC2A0; /* 浅色 */
+  --hbs-orange-lightest: #FFE0CF; /* 极浅 */
+  --hbs-orange-pale: #FFEFE7;   /* 最浅 */
+
+  /* 1.2 基础颜色（中性色） */
+  --hbs-white: #FFFFFF;
+  --hbs-text-primary: #222222;   /* 主文本 */
+  --hbs-text-secondary: #737587; /* 辅助文本 */
+  --hbs-text-tertiary: #AFB3C2; /* 说明性文本 */
+  --hbs-border-gray: #D8DAE3;   /* 分隔线（灰底） */
+  --hbs-border-light: #E8ECF2;  /* 分隔线（白底） */
+  --hbs-bg-page: #F4F6F9;       /* 页面背景 */
+  --hbs-bg-notice: #FEF6E7;     /* 通知栏背景 */
+  --hbs-bg-warning: #FFEAE9;     /* 警示栏背景 */
+
+  /* 1.3 功能色 */
+  --hbs-info: #508CEE;    /* 说明 - 信息提示 */
+  --hbs-success: #56C468; /* 成功 */
+  --hbs-warning: #F7B44C; /* 强调/提醒 */
+  --hbs-error: #E85757;   /* 错误/警告 */
+}
+
+/* Tailwind 颜色映射 */
+@layer base {
+  :root {
+    /* 品牌色 */
+    --color-hbs-orange: 255, 102, 17;
+    --color-hbs-orange-deep: 153, 58, 6;
+    --color-hbs-orange-dark: 204, 78, 10;
+    --color-hbs-orange-mid: 255, 163, 112;
+    --color-hbs-orange-light: 255, 133, 65;
+    --color-hbs-orange-lighter: 255, 194, 160;
+    --color-hbs-orange-lightest: 255, 224, 207;
+    --color-hbs-orange-pale: 255, 239, 231;
+
+    /* 中性色 */
+    --color-hbs-white: 255, 255, 255;
+    --color-hbs-text-primary: 34, 34, 34;
+    --color-hbs-text-secondary: 115, 117, 135;
+    --color-hbs-text-tertiary: 175, 179, 194;
+    --color-hbs-border-gray: 216, 218, 227;
+    --color-hbs-border-light: 232, 236, 242;
+    --color-hbs-bg-page: 244, 246, 249;
+    --color-hbs-bg-notice: 254, 246, 231;
+    --color-hbs-bg-warning: 255, 234, 233;
+
+    /* 功能色 */
+    --color-hbs-info: 80, 140, 238;
+    --color-hbs-success: 86, 196, 104;
+    --color-hbs-warning: 247, 180, 76;
+    --color-hbs-error: 232, 87, 87;
+  }
+}
+
+/* ============================================
+   二、文字系统
+   ============================================ */
+
+/* 字体族 */
+@layer base {
+  html {
+    font-family: 'PingFang SC', 'Helvetica Neue', Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* 字号系统 T0-T8 */
+  .hbs-text-t0 { font-size: 40px; line-height: 56px; font-weight: 500; }
+  .hbs-text-t1 { font-size: 36px; line-height: 50px; font-weight: 500; }
+  .hbs-text-t2 { font-size: 34px; line-height: 48px; font-weight: 500; }
+  .hbs-text-t3 { font-size: 32px; line-height: 44px; font-weight: 400; }
+  .hbs-text-t4 { font-size: 28px; line-height: 40px; font-weight: 400; }
+  .hbs-text-t5 { font-size: 26px; line-height: 36px; font-weight: 400; }
+  .hbs-text-t6 { font-size: 24px; line-height: 34px; font-weight: 400; }
+  .hbs-text-t7 { font-size: 22px; line-height: 30px; font-weight: 400; }
+  .hbs-text-t8 { font-size: 20px; line-height: 28px; font-weight: 400; }
+
+  /* 数字字体 */
+  .hbs-text-number {
+    font-family: 'D-DIN-PRO', 'Helvetica Neue', Arial, sans-serif;
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+/* ============================================
+   三、全局基础规范
+   ============================================ */
+
+@layer base {
+  /* 布局 */
+  .hbs-page {
+    width: 100%;
+    max-width: 430px;
+    margin: 0 auto;
+    background-color: var(--hbs-white);
+    min-height: 100vh;
+  }
+
+  /* 页面边距 */
+  .hbs-page-padding {
+    padding-left: 24px;
+    padding-right: 24px;
+  }
+
+  /* 模块间距 */
+  .hbs-section-gap {
+    margin-top: 20px;
+  }
+
+  /* 圆角 */
+  .hbs-radius-lg { border-radius: 24px; } /* 大卡片 */
+  .hbs-radius-md { border-radius: 12px; } /* 内部卡片、按钮、输入框 */
+  .hbs-radius-sm { border-radius: 4px; }  /* Checkbox */
+
+  /* 描边 */
+  .hbs-border-gray { border: 1px solid var(--hbs-border-gray); }
+  .hbs-border-light { border: 1px solid var(--hbs-border-light); }
+}
+
+/* ============================================
+   四、卡片组件
+   ============================================ */
+
+@layer components {
+  /* 大卡片 */
+  .hbs-card {
+    background-color: var(--hbs-white);
+    border-radius: 24px;
+    padding-left: 24px;
+    padding-right: 24px;
+    padding-top: 16px;
+    padding-bottom: 16px;
+  }
+
+  /* 内部卡片 */
+  .hbs-card-inner {
+    background-color: var(--hbs-white);
+    border-radius: 12px;
+    padding: 16px;
+  }
+
+  /* 卡片间距 */
+  .hbs-card-gap {
+    gap: 16px;
+  }
+
+  /* 卡片配图比例 */
+  .hbs-card-ratio-1-1 { aspect-ratio: 1 / 1; }
+  .hbs-card-ratio-3-4 { aspect-ratio: 3 / 4; }
+  .hbs-card-ratio-4-3 { aspect-ratio: 4 / 3; }
+}
+
+/* ============================================
+   五、按钮组件
+   ============================================ */
+
+@layer components {
+  /* 基础按钮 */
+  .hbs-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    min-width: 64px;
+    min-height: 44px;
+    padding: 0 16px;
+  }
+
+  /* 主要按钮 */
+  .hbs-btn-primary {
+    background-color: var(--hbs-orange);
+    color: var(--hbs-white);
+  }
+  .hbs-btn-primary:hover { background-color: var(--hbs-orange-dark); }
+  .hbs-btn-primary:active { background-color: var(--hbs-orange-deep); }
+  .hbs-btn-primary:disabled {
+    background-color: var(--hbs-border-gray);
+    color: var(--hbs-text-tertiary);
+    cursor: not-allowed;
+  }
+
+  /* 次要按钮 */
+  .hbs-btn-secondary {
+    background-color: var(--hbs-white);
+    color: var(--hbs-orange);
+    border: 1px solid var(--hbs-orange);
+  }
+  .hbs-btn-secondary:hover { background-color: var(--hbs-orange-pale); }
+  .hbs-btn-secondary:active { background-color: var(--hbs-orange-lightest); }
+  .hbs-btn-secondary:disabled {
+    border-color: var(--hbs-border-gray);
+    color: var(--hbs-text-tertiary);
+    cursor: not-allowed;
+  }
+
+  /* 文字按钮 */
+  .hbs-btn-text {
+    background-color: transparent;
+    color: var(--hbs-orange);
+  }
+  .hbs-btn-text:hover { background-color: var(--hbs-orange-pale); }
+  .hbs-btn-text:active { background-color: var(--hbs-orange-lightest); }
+
+  /* 按钮尺寸 */
+  .hbs-btn-sm { min-height: 36px; padding: 0 12px; font-size: 14px; }
+  .hbs-btn-md { min-height: 44px; padding: 0 16px; font-size: 16px; }
+  .hbs-btn-lg { min-height: 52px; padding: 0 24px; font-size: 18px; }
+}
+
+/* ============================================
+   六、输入框组件
+   ============================================ */
+
+@layer components {
+  .hbs-input-wrapper {
+    position: relative;
+    width: 100%;
+  }
+
+  .hbs-input {
+    width: 100%;
+    height: 56px;
+    border-radius: 12px;
+    border: 1px solid var(--hbs-border-gray);
+    padding: 0 16px;
+    font-size: 16px;
+    color: var(--hbs-text-primary);
+    background-color: var(--hbs-white);
+    transition: all 0.2s ease;
+  }
+
+  .hbs-input::placeholder {
+    color: var(--hbs-text-tertiary);
+  }
+
+  .hbs-input:focus {
+    outline: none;
+    border-color: var(--hbs-orange);
+  }
+
+  .hbs-input:disabled {
+    background-color: var(--hbs-bg-page);
+    border-color: var(--hbs-border-light);
+    color: var(--hbs-text-tertiary);
+    cursor: not-allowed;
+  }
+
+  .hbs-input-error {
+    border-color: var(--hbs-error);
+    background-color: var(--hbs-bg-warning);
+  }
+
+  .hbs-input-error-message {
+    color: var(--hbs-error);
+    font-size: 12px;
+    margin-top: 4px;
+  }
+}
+
+/* ============================================
+   七、Checkbox 组件
+   ============================================ */
+
+@layer components {
+  .hbs-checkbox-wrapper {
+    display: inline-flex;
+    align-items: center;
+    cursor: pointer;
+  }
+
+  .hbs-checkbox {
+    width: 44px;
+    height: 44px;
+    border-radius: 4px;
+    border: 1px solid var(--hbs-border-gray);
+    background-color: var(--hbs-white);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+  }
+
+  .hbs-checkbox-checked {
+    background-color: var(--hbs-orange);
+    border-color: var(--hbs-orange);
+  }
+
+  .hbs-checkbox-checked svg {
+    color: var(--hbs-white);
+  }
+
+  .hbs-checkbox:disabled {
+    background-color: var(--hbs-border-light);
+    border-color: var(--hbs-border-light);
+    cursor: not-allowed;
+  }
+
+  .hbs-checkbox-label {
+    margin-left: 12px;
+    color: var(--hbs-text-primary);
+    font-size: 16px;
+  }
+}
+
+/* ============================================
+   八、Radio 组件
+   ============================================ */
+
+@layer components {
+  .hbs-radio-wrapper {
+    display: inline-flex;
+    align-items: center;
+    cursor: pointer;
+  }
+
+  .hbs-radio {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: 1px solid var(--hbs-border-gray);
+    background-color: var(--hbs-white);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+  }
+
+  .hbs-radio-inner {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background-color: transparent;
+    transition: all 0.2s ease;
+  }
+
+  .hbs-radio-selected {
+    border-color: var(--hbs-orange);
+  }
+
+  .hbs-radio-selected .hbs-radio-inner {
+    background-color: var(--hbs-orange);
+  }
+
+  .hbs-radio:disabled {
+    border-color: var(--hbs-border-light);
+    cursor: not-allowed;
+  }
+
+  .hbs-radio:disabled .hbs-radio-inner {
+    background-color: var(--hbs-text-tertiary);
+  }
+
+  .hbs-radio-label {
+    margin-left: 12px;
+    color: var(--hbs-text-primary);
+    font-size: 16px;
+  }
+}
+
+/* ============================================
+   九、Switch/Toggle 组件
+   ============================================ */
+
+@layer components {
+  .hbs-toggle {
+    width: 56px;
+    height: 32px;
+    border-radius: 16px;
+    background-color: var(--hbs-border-gray);
+    position: relative;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .hbs-toggle-slider {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background-color: var(--hbs-white);
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  .hbs-toggle-on {
+    background-color: var(--hbs-success);
+  }
+
+  .hbs-toggle-on .hbs-toggle-slider {
+    left: 26px;
+  }
+
+  .hbs-toggle:disabled {
+    background-color: var(--hbs-border-light);
+    cursor: not-allowed;
+  }
+
+  .hbs-toggle:disabled .hbs-toggle-slider {
+    background-color: var(--hbs-text-tertiary);
+  }
+}
+
+/* ============================================
+   十、Tag 标签组件
+   ============================================ */
+
+@layer components {
+  .hbs-tag {
+    display: inline-flex;
+    align-items: center;
+    height: 32px;
+    padding: 0 8px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 500;
+  }
+
+  /* 普通标签 */
+  .hbs-tag-default {
+    background-color: var(--hbs-bg-page);
+    color: var(--hbs-text-primary);
+    border: 1px solid var(--hbs-border-gray);
+  }
+
+  /* 功能标签 */
+  .hbs-tag-primary {
+    background-color: var(--hbs-orange);
+    color: var(--hbs-white);
+  }
+
+  /* 成功标签 */
+  .hbs-tag-success {
+    background-color: var(--hbs-success);
+    color: var(--hbs-white);
+  }
+
+  /* 警告标签 */
+  .hbs-tag-warning {
+    background-color: var(--hbs-warning);
+    color: var(--hbs-white);
+  }
+
+  /* 错误标签 */
+  .hbs-tag-error {
+    background-color: var(--hbs-error);
+    color: var(--hbs-white);
+  }
+
+  /* 信息标签 */
+  .hbs-tag-info {
+    background-color: var(--hbs-info);
+    color: var(--hbs-white);
+  }
+}
+
+/* ============================================
+   十一、间距系统 (4px 栅格)
+   ============================================ */
+
+@layer utilities {
+  .hbs-gap-1 { gap: 4px; }
+  .hbs-gap-2 { gap: 8px; }
+  .hbs-gap-3 { gap: 12px; }
+  .hbs-gap-4 { gap: 16px; }
+  .hbs-gap-5 { gap: 20px; }
+  .hbs-gap-6 { gap: 24px; }
+  .hbs-gap-8 { gap: 32px; }
+
+  .hbs-mt-1 { margin-top: 4px; }
+  .hbs-mt-2 { margin-top: 8px; }
+  .hbs-mt-3 { margin-top: 12px; }
+  .hbs-mt-4 { margin-top: 16px; }
+  .hbs-mt-5 { margin-top: 20px; }
+  .hbs-mt-6 { margin-top: 24px; }
+
+  .hbs-mb-1 { margin-bottom: 4px; }
+  .hbs-mb-2 { margin-bottom: 8px; }
+  .hbs-mb-3 { margin-bottom: 12px; }
+  .hbs-mb-4 { margin-bottom: 16px; }
+  .hbs-mb-5 { margin-bottom: 20px; }
+  .hbs-mb-6 { margin-bottom: 24px; }
+
+  .hbs-p-1 { padding: 4px; }
+  .hbs-p-2 { padding: 8px; }
+  .hbs-p-3 { padding: 12px; }
+  .hbs-p-4 { padding: 16px; }
+  .hbs-p-6 { padding: 24px; }
+
+  .hbs-px-2 { padding-left: 8px; padding-right: 8px; }
+  .hbs-px-3 { padding-left: 12px; padding-right: 12px; }
+  .hbs-px-4 { padding-left: 16px; padding-right: 16px; }
+  .hbs-px-6 { padding-left: 24px; padding-right: 24px; }
+
+  .hbs-py-2 { padding-top: 8px; padding-bottom: 8px; }
+  .hbs-py-3 { padding-top: 12px; padding-bottom: 12px; }
+  .hbs-py-4 { padding-top: 16px; padding-bottom: 16px; }
+}
+
+/* ============================================
+   十二、动画
+   ============================================ */
+
+@layer utilities {
+  .hbs-transition {
+    transition: all 0.2s ease;
+  }
+
+  .hbs-fade-in {
+    animation: hbs-fade-in 0.3s ease;
+  }
+
+  @keyframes hbs-fade-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  .hbs-slide-up {
+    animation: hbs-slide-up 0.3s ease;
+  }
+
+  @keyframes hbs-slide-up {
+    from { transform: translateY(20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+  }
+}

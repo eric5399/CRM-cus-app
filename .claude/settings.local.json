@@ -1,0 +1,20 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(ls -la ~/.claude/skills/ 2>/dev/null || echo \"全局 skills 目录不存在\")",
+      "Read(//Users/ericwu/.claude/skills/**)",
+      "WebFetch(domain:github.com)",
+      "Bash(ls -la /tmp/beautiful-html-templates/)",
+      "Read(//private/tmp/beautiful-html-templates/**)",
+      "Bash(ls -la /tmp/beautiful-html-templates/runtime/)",
+      "Read(//private/tmp/beautiful-html-templates/runtime/**)",
+      "Bash(find /tmp/baoyu-skills -type f | head -80)",
+      "Read(//private/tmp/baoyu-skills/**)",
+      "Bash(bun --version)",
+      "Bash(curl -fsSL https://bun.sh/install)",
+      "Bash(bash)",
+      "Bash(open \"/Users/ericwu/Documents/CRM/CRM-APP改版项目/领导评审/CRM客户档案改版评审-BlockFrame.html\")",
+      "Bash(grep -r \"express\" /Users/ericwu/Documents/CRM/CRM-APP改版项目 --include=\"*.ts\" --include=\"*.tsx\" --include=\"*.js\" --include=\"*.json\" ! -path \"*/node_modules/*\")"
+    ]
+  }
+}

@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<title>Neo-Grid Bold — Preview</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg: #ECECE8;
+    --ink: #0A0A0A;
+    --paper: #F5F4EF;
+    --accent: #E6FF3D;
+    --line: #0A0A0A;
+    --muted: #8A8A85;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 100%; height: 100%; overflow: hidden; background: #1a1a1a; }
+  body { font-family: "Space Grotesk", "Helvetica Neue", Helvetica, Arial, sans-serif; color: var(--ink); display: flex; align-items: center; justify-content: center; }
+
+  .canvas {
+    width: 1920px; height: 1080px;
+    background: var(--bg);
+    position: relative;
+    overflow: hidden;
+    transform-origin: center center;
+  }
+
+  .frame {
+    position: absolute; inset: 40px;
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    grid-template-rows: repeat(8, 1fr);
+    gap: 12px;
+  }
+  .card { background: var(--paper); position: relative; overflow: hidden; }
+  .card.ink   { background: var(--ink); color: var(--paper); }
+  .card.lemon { background: var(--accent); color: var(--ink); }
+
+  .pagenum {
+    position: absolute;
+    left: 0; bottom: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: 24px;
+    padding: 14px 22px;
+    letter-spacing: 0.04em;
+  }
+
+  .display { font-weight: 700; font-size: 132px; line-height: 0.92; letter-spacing: -0.02em; text-transform: uppercase; }
+  .title { font-weight: 700; font-size: 88px; line-height: 0.95; letter-spacing: -0.015em; text-transform: uppercase; }
+  .subtitle { font-weight: 700; font-size: 56px; line-height: 1; letter-spacing: -0.01em; text-transform: uppercase; }
+  .body { font-size: 28px; line-height: 1.35; font-weight: 400; }
+  .label { font-family: "JetBrains Mono", ui-monospace, monospace; font-size: 24px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink); opacity: 0.7; }
+
+  /* Cover */
+  .s-cover .panel-photo-l { grid-column: 1 / span 3; grid-row: 1 / span 8; background: #0a0a0a; position: relative; overflow: hidden; }
+  .s-cover .panel-photo-l .ph { position: absolute; inset: 0;
+    background:
+      radial-gradient(120% 80% at 30% 30%, #2a2a2a 0%, #0a0a0a 70%),
+      repeating-linear-gradient(135deg, rgba(255,255,255,.04) 0 2px, transparent 2px 8px);
+  }
+  .s-cover .panel-photo-l::after {
+    content: "CRM / APP"; position: absolute; left: 16px; bottom: 56px;
+    font-family: "JetBrains Mono", monospace; font-size: 13px;
+    color: rgba(255,255,255,.55); letter-spacing: .12em;
+  }
+  .s-cover .panel-mid  { grid-column: 4 / span 5; grid-row: 1 / span 5; background: var(--accent); position: relative; }
+  .s-cover .panel-titletile { grid-column: 4 / span 5; grid-row: 6 / span 3; background: var(--accent); position: relative; }
+  .s-cover .panel-photo-r { grid-column: 9 / span 4; grid-row: 1 / span 5; background:#111; position: relative; overflow: hidden; }
+  .s-cover .panel-photo-r .ph { position: absolute; inset: 0;
+    background:
+      radial-gradient(80% 60% at 60% 40%, #1f1f1f 0%, #0b0b0b 80%),
+      repeating-linear-gradient(45deg, rgba(255,255,255,.05) 0 2px, transparent 2px 8px);
+  }
+  .s-cover .panel-photo-r::after {
+    content: "MOBILE"; position: absolute; left: 16px; bottom: 16px;
+    font-family: "JetBrains Mono", monospace; font-size: 13px;
+    color: rgba(255,255,255,.55); letter-spacing: .12em;
+  }
+  .s-cover .panel-cap   { grid-column: 9 / span 4; grid-row: 6 / span 3; background: var(--paper); position: relative; }
+  .s-cover .qr {
+    position: absolute; top: 28px; left: 28px;
+    width: 90px; height: 90px; background: var(--ink);
+    display: grid; grid-template-columns: repeat(5, 1fr); grid-template-rows: repeat(5, 1fr); gap: 0;
+  }
+  .s-cover .qr i { background: var(--ink); }
+  .s-cover .qr i.k { background: var(--accent); }
+  .s-cover .title-block { position: absolute; left: 40px; right: 40px; bottom: 40px; }
+  .s-cover .meta-l {
+    position: absolute; left: 40px; bottom: 40px;
+    font-family: "JetBrains Mono", monospace; font-size: 24px; line-height: 1.6;
+    letter-spacing: .04em;
+  }
+  .s-cover .blockmark {
+    position: absolute; right: 40px; bottom: 40px;
+    width: 56px; height: 56px;
+    display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 4px;
+  }
+  .s-cover .blockmark span:nth-child(1) { background: var(--ink); }
+  .s-cover .blockmark span:nth-child(2) { background: transparent; }
+  .s-cover .blockmark span:nth-child(3) { background: transparent; }
+  .s-cover .blockmark span:nth-child(4) { background: var(--ink); }
+
+  /* Scale to fit viewport */
+  @media (max-width: 1920px) {
+    .canvas { transform: scale(calc(min(100vw / 1920, 100vh / 1080))); }
+  }
+</style>
+</head>
+<body>
+<div class="canvas">
+  <div class="frame">
+    <div class="panel-photo-l">
+      <div class="ph"></div>
+    </div>
+    <div class="panel-mid">
+      <div class="qr" aria-hidden="true">
+        <i></i><i class="k"></i><i></i><i class="k"></i><i></i>
+        <i class="k"></i><i></i><i class="k"></i><i></i><i class="k"></i>
+        <i></i><i class="k"></i><i></i><i class="k"></i><i></i>
+        <i class="k"></i><i></i><i class="k"></i><i></i><i class="k"></i>
+        <i></i><i class="k"></i><i></i><i class="k"></i><i></i>
+      </div>
+    </div>
+    <div class="panel-titletile">
+      <div class="title-block">
+        <h1 class="title">CRM客户档案<br>APP改版评审</h1>
+      </div>
+      <div class="blockmark" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
+    </div>
+    <div class="panel-photo-r">
+      <div class="ph"></div>
+    </div>
+    <div class="panel-cap">
+      <div class="meta-l">
+        好帮手产品组 · 吴文强<br>2026年5月
+      </div>
+    </div>
+  </div>
+  <div class="pagenum">01 / 05</div>
+</div>
+</body>
+</html>
