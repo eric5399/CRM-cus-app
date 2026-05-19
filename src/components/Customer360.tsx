@@ -31,11 +31,11 @@ const colors = {
 
 // Mock Data for Customer Rights
 const mockVouchers = [
-  { id: 'v1', name: '名企参访体验券', type: '研学', status: '已下发待使用', expiry: '2026-12-31', owner: '张* (HRD)', ownerRole: 'HRD', category1: '产业研学', category2: '名企参访', usage: '用于走进世界500强企业参观学习', instructions: '凭此券可预约参与名企参访活动，请提前3天预约' },
-  { id: 'v2', name: '道路救援服务卡', type: '车主', status: '即将过期', expiry: '2026-04-15', owner: '李* (采购总监)', ownerRole: '采购总监', category1: '车主尊享', category2: '道路救援', usage: '24小时全国道路救援服务', instructions: '拨打客服热线400-xxx-xxxx，凭卡券码使用' },
-  { id: 'v3', name: '高管体检套餐', type: '医健', status: '已使用待评价', expiry: '2026-06-30', owner: '王* (财务总监)', ownerRole: '财务总监', category1: '高端医健', category2: '体检套餐', usage: '三甲医院VIP全面体检', instructions: '请携带身份证和卡券到指定体检中心使用' },
-  { id: 'v4', name: '机场贵宾厅权益', type: '出行', status: '已评价-好评', expiry: '2025-12-31', owner: '张* (HRD)', ownerRole: 'HRD', category1: '商旅出行', category2: '贵宾厅', usage: '全国主要机场贵宾厅休息服务', instructions: '出示电子券码即可享受贵宾厅服务' },
-  { id: 'v5', name: '心理咨询服务', type: '医健', status: '已评价-差评', expiry: '2026-05-31', owner: '赵* (车队管理员)', ownerRole: '车队管理员', category1: '高端医健', category2: '心理咨询', usage: '员工心理健康EAP咨询服务', instructions: '请提前致电预约咨询时间' },
+  { id: 'v1', name: '名企参访体验券', type: '研学', status: '已下发待使用', expiry: '2026-12-31', owner: '张* (HRD)', ownerRole: 'HRD', category1: '产业研学', category2: '名企参访', value: 5000, usage: '用于走进世界500强企业参观学习', instructions: '凭此券可预约参与名企参访活动，请提前3天预约' },
+  { id: 'v2', name: '道路救援服务卡', type: '车主', status: '即将过期', expiry: '2026-04-15', owner: '李* (采购总监)', ownerRole: '采购总监', category1: '车主尊享', category2: '道路救援', value: 800, usage: '24小时全国道路救援服务', instructions: '拨打客服热线400-xxx-xxxx，凭卡券码使用' },
+  { id: 'v3', name: '高管体检套餐', type: '医健', status: '已使用待评价', expiry: '2026-06-30', owner: '王* (财务总监)', ownerRole: '财务总监', category1: '高端医健', category2: '体检套餐', value: 8000, usage: '三甲医院VIP全面体检', instructions: '请携带身份证和卡券到指定体检中心使用' },
+  { id: 'v4', name: '机场贵宾厅权益', type: '出行', status: '已评价-好评', expiry: '2025-12-31', owner: '张* (HRD)', ownerRole: 'HRD', category1: '商旅出行', category2: '贵宾厅', value: 1500, usage: '全国主要机场贵宾厅休息服务', instructions: '出示电子券码即可享受贵宾厅服务' },
+  { id: 'v5', name: '心理咨询服务', type: '医健', status: '已评价-差评', expiry: '2026-05-31', owner: '赵* (车队管理员)', ownerRole: '车队管理员', category1: '高端医健', category2: '心理咨询', value: 2000, usage: '员工心理健康EAP咨询服务', instructions: '请提前致电预约咨询时间' },
 ];
 
 // Mock Data for Service Applications
@@ -73,6 +73,7 @@ interface Customer360Props {
   onNavigateToClaimRecord: () => void;
   onNavigateToTimeline: () => void;
   onNavigateToAllServices?: () => void;
+  onNavigateToServiceOverview?: (tab: '发放服务' | '使用服务' | '未使用的' | '有评价的') => void;
 }
 
 type TabType = '客户洞察' | '销售转化' | '服务养客';
@@ -85,7 +86,7 @@ const radarData = [
   { subject: '续保意愿', A: 85, fullMark: 150 },
 ];
 
-export default function Customer360({ client, onBack, onApplyService, onNavigateToAgencyCustomerDetails, onNavigateToApproval, onNavigateToBasicInfo, onNavigateToCoopInfo, onNavigateToClaimRecord, onNavigateToTimeline, onNavigateToAllServices }: Customer360Props) {
+export default function Customer360({ client, onBack, onApplyService, onNavigateToAgencyCustomerDetails, onNavigateToApproval, onNavigateToBasicInfo, onNavigateToCoopInfo, onNavigateToClaimRecord, onNavigateToTimeline, onNavigateToAllServices, onNavigateToServiceOverview }: Customer360Props) {
   const [activeTab, setActiveTab] = useState<TabType>('销售转化');
   const [timelineFilter, setTimelineFilter] = useState<'拜访记录' | '服务使用' | '入企记录'>('拜访记录');
   const [oppFilter, setOppFilter] = useState<string[]>([]);
@@ -114,8 +115,8 @@ export default function Customer360({ client, onBack, onApplyService, onNavigate
   const [salesSubTab, setSalesSubTab] = useState<'商机' | '续保' | 'B2C'>('商机');
   const [qikangTab, setQikangTab] = useState<'企业达成' | '员工活化'>('企业达成');
   const [qikangSalesTab, setQikangSalesTab] = useState<'企康商机' | 'B2C'>('企康商机');
-  const [serviceTab, setServiceTab] = useState<'员工服务' | '企业服务'>('员工服务');
-  const [serviceInnerTab, setServiceInnerTab] = useState<'优先跟进服务' | '服务工具'>('优先跟进服务');
+  const [serviceTab, setServiceTab] = useState<'关键人服务' | '企业服务'>('关键人服务');
+  const [serviceInnerTab, setServiceInnerTab] = useState<'推荐服务' | '推荐工具'>('推荐服务');
   const [showServiceToolsModal, setShowServiceToolsModal] = useState(false);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
 
@@ -361,9 +362,9 @@ export default function Customer360({ client, onBack, onApplyService, onNavigate
           </div>
           <div className="flex flex-wrap gap-1 items-center">
             <span className="px-2 py-0.5 bg-orange-100 text-orange-600 rounded text-[10px] font-medium">至尊</span>
-            <span className="px-2 py-0.5 bg-gray-100 text-gray-600 rounded text-[10px] font-medium">企康客户</span>
+            <span className="px-2 py-0.5 bg-gray-100 text-gray-600 rounded text-[10px] font-medium">民营企业</span>
             <span className="px-2 py-0.5 bg-gray-100 text-gray-600 rounded text-[10px] font-medium">保险已客</span>
-            <span className="px-2 py-0.5 bg-gray-100 text-gray-600 rounded text-[10px] font-medium">员工5000+</span>
+            <span className="px-2 py-0.5 bg-gray-100 text-gray-600 rounded text-[10px] font-medium">存续</span>
             <span className="px-2 py-0.5 bg-gray-100 text-gray-600 rounded text-[10px] font-medium">苏州开元区</span>
           </div>
 
@@ -672,12 +673,12 @@ export default function Customer360({ client, onBack, onApplyService, onNavigate
           {activeTab === '销售转化' && (
             <div className="space-y-4">
               <div className="flex space-x-2">
-                {['商机(3)', '续保(2)', 'B2C(1)'].map(tab => (
+                {['商机', '续保', 'B2C'].map(tab => (
                   <button
                     key={tab}
-                    onClick={() => setSalesSubTab(tab.replace(/\(\d+\)/, '') as any)}
+                    onClick={() => setSalesSubTab(tab as any)}
                     className={`px-4 py-1.5 text-sm font-medium rounded-full transition-colors ${
-                      salesSubTab === tab.replace(/\(\d+\)/, '')
+                      salesSubTab === tab
                         ? 'bg-orange-100 text-orange-600'
                         : 'bg-gray-100 text-gray-500 hover:bg-gray-200'
                     }`}
@@ -1093,9 +1094,9 @@ export default function Customer360({ client, onBack, onApplyService, onNavigate
           {/* 服务养客 */}
           {activeTab === '服务养客' && (
             <div className="space-y-4">
-              {/* 一级tab - 员工服务/企业服务 (参考销售转化二级tab样式) */}
+              {/* 一级tab - 关键人服务/企业服务 (参考销售转化二级tab样式) */}
               <div className="flex space-x-2">
-                {['员工服务', '企业服务'].map(tab => (
+                {['关键人服务', '企业服务'].map(tab => (
                   <button
                     key={tab}
                     onClick={() => setServiceTab(tab as any)}
@@ -1110,32 +1111,32 @@ export default function Customer360({ client, onBack, onApplyService, onNavigate
                 ))}
               </div>
 
-              {serviceTab === '员工服务' && (
+              {serviceTab === '关键人服务' && (
                 <>
                   {/* 服务概览 - 白色底卡片 */}
                   <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-4">
                     <h3 className="text-sm font-bold text-gray-900 mb-3">服务看板</h3>
                     <div className="flex justify-around">
-                      <div className="text-center cursor-pointer">
-                        <div className="text-sm text-gray-500 mb-0.5">已发放的</div>
+                      <div className="text-center cursor-pointer" onClick={() => onNavigateToServiceOverview?.('发放服务')}>
+                        <div className="text-sm text-gray-500 mb-0.5">发放服务</div>
                         <div className="text-base font-bold text-gray-900 flex items-center justify-center">
                           15 <ChevronRight className="w-4 h-4 text-gray-400 ml-0.5" />
                         </div>
                       </div>
-                      <div className="text-center cursor-pointer">
-                        <div className="text-sm text-gray-500 mb-0.5">我申请的</div>
+                      <div className="text-center cursor-pointer" onClick={() => onNavigateToServiceOverview?.('使用服务')}>
+                        <div className="text-sm text-gray-500 mb-0.5">使用服务</div>
                         <div className="text-base font-bold text-gray-900 flex items-center justify-center">
                           8 <ChevronRight className="w-4 h-4 text-gray-400 ml-0.5" />
                         </div>
                       </div>
-                      <div className="text-center cursor-pointer">
-                        <div className="text-sm text-gray-500 mb-0.5">即将失效</div>
+                      <div className="text-center cursor-pointer" onClick={() => onNavigateToServiceOverview?.('未使用的')}>
+                        <div className="text-sm text-gray-500 mb-0.5">未使用的</div>
                         <div className="text-base font-bold text-gray-900 flex items-center justify-center">
                           1 <ChevronRight className="w-4 h-4 text-gray-400 ml-0.5" />
                         </div>
                       </div>
-                      <div className="text-center cursor-pointer">
-                        <div className="text-sm text-gray-500 mb-0.5">有差评的</div>
+                      <div className="text-center cursor-pointer" onClick={() => onNavigateToServiceOverview?.('有评价的')}>
+                        <div className="text-sm text-gray-500 mb-0.5">有评价的</div>
                         <div className="text-base font-bold text-gray-900 flex items-center justify-center">
                           2 <ChevronRight className="w-4 h-4 text-gray-400 ml-0.5" />
                         </div>
@@ -1147,19 +1148,13 @@ export default function Customer360({ client, onBack, onApplyService, onNavigate
                     </div>
                   </div>
 
-                  {/* 优先跟进服务标题 */}
+                  {/* 推荐服务标题 */}
                   <div className="flex items-center justify-between">
-                    <h3 className="text-sm font-bold text-gray-900">优先跟进服务</h3>
-                    <button
-                      onClick={onNavigateToAllServices}
-                      className="text-xs text-gray-600 hover:text-gray-700"
-                    >
-                      查看全部 {'>'}
-                    </button>
+                    <h3 className="text-sm font-bold text-gray-900">推荐服务</h3>
                   </div>
 
                   <div className="space-y-3">
-                      {/* 排序：红色状态(即将过期、已评价-差评)置顶，仅显示前3条 */}
+                      {/* 排序：红色状态(即将过期、已评价-差评)置顶，仅显示前2条 */}
                       {([...mockVouchers].sort((a, b) => {
                         const redStatuses = ['即将过期', '已评价-差评'];
                         const aIsRed = redStatuses.includes(a.status);
@@ -1167,7 +1162,7 @@ export default function Customer360({ client, onBack, onApplyService, onNavigate
                         if (aIsRed && !bIsRed) return -1;
                         if (!aIsRed && bIsRed) return 1;
                         return 0;
-                      })).filter(v => !voucherSearchQuery || v.name.includes(voucherSearchQuery)).slice(0, 3).map((voucher, idx) => (
+                      })).filter(v => !voucherSearchQuery || v.name.includes(voucherSearchQuery)).slice(0, 2).map((voucher, idx) => (
                         <div key={voucher.id} className="bg-white border border-gray-100 rounded-xl p-3 shadow-sm">
                           <div className="flex justify-between items-start mb-2">
                             <div className="flex items-center">
@@ -1195,6 +1190,7 @@ export default function Customer360({ client, onBack, onApplyService, onNavigate
                             <div className="space-y-1">
                               <div className="text-xs text-gray-500">所属人：<span className="text-gray-900">{voucher.owner}</span></div>
                               <div className="text-xs text-gray-500">有效期至：{voucher.expiry}</div>
+                              <div className="text-xs text-gray-500">权益价值：<span className="text-orange-600 font-medium">¥{voucher.value?.toLocaleString()}</span></div>
                             </div>
                             <button
                               onClick={() => {
@@ -1210,9 +1206,9 @@ export default function Customer360({ client, onBack, onApplyService, onNavigate
                       ))}
                     </div>
 
-                    {/* 推荐服务武器 */}
+                    {/* 推荐工具 */}
                     <div className="mt-4 pt-4 border-t border-gray-100">
-                      <h4 className="text-sm font-bold text-gray-900 mb-3">推荐服务武器</h4>
+                      <h4 className="text-sm font-bold text-gray-900 mb-3">推荐工具</h4>
                       <div className="grid grid-cols-2 gap-3">
                         {[
                           { name: '申请服务加投', sub: '增加服务投放力度' },

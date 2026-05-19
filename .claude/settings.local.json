@@ -14,7 +14,33 @@
       "Bash(curl -fsSL https://bun.sh/install)",
       "Bash(bash)",
       "Bash(open \"/Users/ericwu/Documents/CRM/CRM-APP改版项目/领导评审/CRM客户档案改版评审-BlockFrame.html\")",
-      "Bash(grep -r \"express\" /Users/ericwu/Documents/CRM/CRM-APP改版项目 --include=\"*.ts\" --include=\"*.tsx\" --include=\"*.js\" --include=\"*.json\" ! -path \"*/node_modules/*\")"
+      "Bash(grep -r \"express\" /Users/ericwu/Documents/CRM/CRM-APP改版项目 --include=\"*.ts\" --include=\"*.tsx\" --include=\"*.js\" --include=\"*.json\" ! -path \"*/node_modules/*\")",
+      "Bash(gh repo *)",
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "Bash(curl -sL https://raw.githubusercontent.com/vercel-labs/skills/main/skills/find-skills/SKILL.md)",
+      "Bash(mkdir -p /Users/ericwu/Documents/CRM/CRM-APP改版项目/.claude/skills/find-skills)",
+      "WebFetch(domain:skills.sh)",
+      "Bash(npx skills *)",
+      "Read(//Users/ericwu/.agents/skills/flightclaw/**)",
+      "Bash(bash setup.sh)",
+      "Bash(brew list *)",
+      "Read(//usr/local/bin/**)",
+      "Read(//opt/homebrew/bin/**)",
+      "Bash(pip3 install *)",
+      "Bash(python3 -m pip install --upgrade pip)",
+      "Bash(brew --version)",
+      "Bash(brew install *)",
+      "Bash(/opt/homebrew/bin/pip3.12 install *)",
+      "Bash(/opt/homebrew/bin/python3.12 -m venv /Users/ericwu/.claude/skills/flightclaw/.venv)",
+      "Bash(/Users/ericwu/.claude/skills/flightclaw/.venv/bin/pip install *)",
+      "Bash(.venv/bin/python3 scripts/search-flights.py SWA CTU,TFU 2025-09-25 --date-to 2025-09-30 --results 10)",
+      "Bash(.venv/bin/python3 scripts/search-flights.py SZX HMI 2027-02-01 --date-to 2027-02-05 --results 10)",
+      "Bash(.venv/bin/python3 scripts/track-flight.py SZX HMI 2027-02-01 --date-to 2027-02-05 --target-price 62000)",
+      "Bash(.venv/bin/python3 scripts/list-tracked.py)",
+      "Bash(.venv/bin/python3 scripts/track-flight.py SZX HMI 2027-02-01 --date-to 2027-02-05 --target-price 413)"
+    ],
+    "additionalDirectories": [
+      "/Users/ericwu/Documents/CRM/CRM-APP改版项目/.claude/skills"
     ]
   }
 }

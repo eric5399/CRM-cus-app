@@ -13,14 +13,18 @@ import ClaimRecord from './components/ClaimRecord';
 import TimelinePage from './components/TimelinePage';
 import CustomerTodo from './components/CustomerTodo';
 import AllServices from './components/AllServices';
+import ServiceOverview from './components/ServiceOverview';
 
-type ViewState = 'HOME' | 'DASHBOARD' | 'CUSTOMER_LIST' | 'CUSTOMER_360' | 'SERVICE_APPLICATION' | 'AGENCY_CUSTOMER_DETAILS' | 'SERVICE_APPROVAL' | 'BASIC_INFO' | 'COOP_INFO' | 'CLAIM_RECORD' | 'TIMELINE_PAGE' | 'CUSTOMER_TODO' | 'ALL_SERVICES';
+type ViewState = 'HOME' | 'DASHBOARD' | 'CUSTOMER_LIST' | 'CUSTOMER_360' | 'SERVICE_APPLICATION' | 'AGENCY_CUSTOMER_DETAILS' | 'SERVICE_APPROVAL' | 'BASIC_INFO' | 'COOP_INFO' | 'CLAIM_RECORD' | 'TIMELINE_PAGE' | 'CUSTOMER_TODO' | 'ALL_SERVICES' | 'SERVICE_OVERVIEW';
+
+type OverviewTab = '发放服务' | '使用服务' | '未使用的' | '有评价的';
 
 export default function App() {
   const [currentView, setCurrentView] = useState<ViewState>('HOME');
   const [customer360Source, setCustomer360Source] = useState<ViewState>('HOME');
   const [selectedClient, setSelectedClient] = useState<Client | null>(null);
   const [globalToast, setGlobalToast] = useState<string | null>(null);
+  const [serviceOverviewTab, setServiceOverviewTab] = useState<OverviewTab>('发放服务');
 
   const showToast = (message: string) => {
     setGlobalToast(message);
@@ -125,6 +129,15 @@ export default function App() {
     setCurrentView('CUSTOMER_360');
   };
 
+  const handleNavigateToServiceOverview = (tab: OverviewTab) => {
+    setServiceOverviewTab(tab);
+    setCurrentView('SERVICE_OVERVIEW');
+  };
+
+  const handleBackFromServiceOverview = () => {
+    setCurrentView('CUSTOMER_360');
+  };
+
   const handleSubmitService = () => {
     setCurrentView('CUSTOMER_360');
     showToast('服务申请已发起，可以在客户档案-服务养客-服务申请tab中查看进度');
@@ -171,6 +184,7 @@ export default function App() {
             onNavigateToClaimRecord={handleNavigateToClaimRecord}
             onNavigateToTimeline={handleNavigateToTimeline}
             onNavigateToAllServices={handleNavigateToAllServices}
+            onNavigateToServiceOverview={handleNavigateToServiceOverview}
           />
         )}
         {currentView === 'SERVICE_APPLICATION' && selectedClient && (
@@ -203,6 +217,13 @@ export default function App() {
         )}
         {currentView === 'ALL_SERVICES' && selectedClient && (
           <AllServices client={selectedClient} onBack={handleBackFromAllServices} />
+        )}
+        {currentView === 'SERVICE_OVERVIEW' && selectedClient && (
+          <ServiceOverview
+            client={selectedClient}
+            onBack={handleBackFromServiceOverview}
+            initialTab={serviceOverviewTab}
+          />
         )}
       </div>
     </div>

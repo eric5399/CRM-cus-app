@@ -6,12 +6,12 @@ interface BasicInfoProps {
   onBack: () => void;
 }
 
-type InfoTabType = '基础信息' | '股东信息' | '主要人员' | '同谱系企业' | '分支机构' | '处罚信息';
+type InfoTabType = '客户信息' | '股东信息' | '高管信息' | '招投标' | '同谱系企业' | '分支机构' | '处罚信息';
 
 export default function BasicInfo({ client, onBack }: BasicInfoProps) {
-  const [activeTab, setActiveTab] = useState<InfoTabType>('基础信息');
+  const [activeTab, setActiveTab] = useState<InfoTabType>('客户信息');
 
-  const tabs: InfoTabType[] = ['基础信息', '股东信息', '主要人员', '同谱系企业', '分支机构', '处罚信息'];
+  const tabs: InfoTabType[] = ['客户信息', '高管信息', '股东信息', '招投标', '同谱系企业', '分支机构', '处罚信息'];
 
   const handleTabClick = (tab: InfoTabType) => {
     setActiveTab(tab);
@@ -56,10 +56,10 @@ export default function BasicInfo({ client, onBack }: BasicInfoProps) {
 
       {/* Content */}
       <main className="flex-1 overflow-y-auto pb-8">
-        {/* 基础信息 */}
-        <section id="tab-基础信息" className="p-4 space-y-4">
+        {/* 客户信息 */}
+        <section id="tab-客户信息" className="p-4 space-y-4">
           <div className="bg-white rounded-xl p-4 space-y-3">
-            <h3 className="text-sm font-bold text-gray-900">企业信息</h3>
+            <h3 className="text-sm font-bold text-gray-900">客户信息</h3>
             <div className="grid grid-cols-2 gap-3 text-xs">
               <div>
                 <div className="text-gray-500 mb-1">企业名称</div>
@@ -93,12 +93,22 @@ export default function BasicInfo({ client, onBack }: BasicInfoProps) {
                 <div className="text-gray-500 mb-1">所属行业</div>
                 <div className="text-gray-900 font-medium">商务服务业</div>
               </div>
-            </div>
-          </div>
-
-          <div className="bg-white rounded-xl p-4 space-y-3">
-            <h3 className="text-sm font-bold text-gray-900">工商信息</h3>
-            <div className="grid grid-cols-2 gap-3 text-xs">
+              <div>
+                <div className="text-gray-500 mb-1">人员规模</div>
+                <div className="text-gray-900 font-medium">500-999人</div>
+              </div>
+              <div>
+                <div className="text-gray-500 mb-1">企业性质</div>
+                <div className="text-gray-900 font-medium">民营企业</div>
+              </div>
+              <div>
+                <div className="text-gray-500 mb-1">企业联系电话</div>
+                <div className="text-gray-900 font-medium">010-8888****</div>
+              </div>
+              <div>
+                <div className="text-gray-500 mb-1">邮箱</div>
+                <div className="text-gray-900 font-medium">hr@guokong.com</div>
+              </div>
               <div>
                 <div className="text-gray-500 mb-1">注册地址</div>
                 <div className="text-gray-900 font-medium">北京市朝阳区建国路88号</div>
@@ -107,10 +117,39 @@ export default function BasicInfo({ client, onBack }: BasicInfoProps) {
                 <div className="text-gray-500 mb-1">营业期限</div>
                 <div className="text-gray-900 font-medium">2010-03-15 至 2030-03-14</div>
               </div>
-              <div>
+              <div className="col-span-2">
                 <div className="text-gray-500 mb-1">经营范围</div>
-                <div className="text-gray-900 font-medium col-span-2">技术开发、技术服务、技术咨询；销售机械设备、电子产品；货物进出口</div>
+                <div className="text-gray-900 font-medium">技术开发、技术服务、技术咨询；销售机械设备、电子产品；货物进出口</div>
               </div>
+            </div>
+          </div>
+        </section>
+
+        {/* 高管信息 */}
+        <section id="tab-高管信息" className="p-4 space-y-4">
+          <div className="bg-white rounded-xl p-4 space-y-3">
+            <div className="flex items-center justify-between">
+              <h3 className="text-sm font-bold text-gray-900">高管信息</h3>
+              <span className="text-xs text-gray-500">共6人</span>
+            </div>
+            <div className="grid grid-cols-2 gap-3">
+              {[
+                { name: '张建国', role: '执行董事、总经理', relatedCount: 12 },
+                { name: '李明华', role: '监事', relatedCount: 8 },
+                { name: '王志远', role: '副总经理', relatedCount: 5 },
+                { name: '刘芳', role: '财务总监', relatedCount: 3 },
+                { name: '陈静', role: '行政总监', relatedCount: 6 },
+                { name: '赵强', role: '技术总监', relatedCount: 4 },
+              ].map((person, idx) => (
+                <div key={idx} className="bg-gray-50 rounded-xl p-3">
+                  <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center text-xs font-medium text-gray-600 mb-2">
+                    {person.name.charAt(0)}
+                  </div>
+                  <div className="text-xs font-medium text-gray-900">{person.name}</div>
+                  <div className="text-[10px] text-gray-500">{person.role}</div>
+                  <div className="text-[10px] text-orange-600 mt-1">关联{person.relatedCount}家企业</div>
+                </div>
+              ))}
             </div>
           </div>
         </section>
@@ -123,47 +162,56 @@ export default function BasicInfo({ client, onBack }: BasicInfoProps) {
               <span className="text-xs text-gray-500">共4条</span>
             </div>
             {[
-              { name: '北京国控集团', percent: '45%', amount: '2250万' },
-              { name: '张建国', percent: '30%', amount: '1500万' },
-              { name: '李明华', percent: '15%', amount: '750万' },
-              { name: '王志远', percent: '10%', amount: '500万' },
+              { name: '北京国控集团', percent: '45%', finalBenefit: '42%', pedigree: '中国投资有限责任公司' },
+              { name: '张建国', percent: '30%', finalBenefit: '28%', pedigree: '北京国控企业管理有限公司' },
+              { name: '李明华', percent: '15%', finalBenefit: '15%', pedigree: '上海明华投资有限公司' },
+              { name: '王志远', percent: '10%', finalBenefit: '8%', pedigree: '广州远达控股有限公司' },
             ].map((shareholder, idx) => (
               <div key={idx} className="flex items-center justify-between py-2 border-b border-gray-100 last:border-0">
                 <div>
                   <div className="text-xs font-medium text-gray-900">{shareholder.name}</div>
-                  <div className="text-[10px] text-gray-500">认缴金额：{shareholder.amount}</div>
+                  <div className="text-[10px] text-gray-500">谱系：{shareholder.pedigree}</div>
                 </div>
-                <div className="text-xs font-semibold text-orange-600">{shareholder.percent}</div>
+                <div className="text-right">
+                  <div className="text-xs font-semibold text-gray-900">持股比例{shareholder.percent}</div>
+                  <div className="text-[10px] text-gray-500">最终受益股份{shareholder.finalBenefit}</div>
+                </div>
               </div>
             ))}
           </div>
         </section>
 
-        {/* 主要人员 */}
-        <section id="tab-主要人员" className="p-4 space-y-4">
-          <div className="bg-white rounded-xl p-4 space-y-3">
-            <div className="flex items-center justify-between">
-              <h3 className="text-sm font-bold text-gray-900">主要人员</h3>
-              <span className="text-xs text-gray-500">共6人</span>
+        {/* 招投标 */}
+        <section id="tab-招投标" className="p-4 space-y-4">
+          <div className="bg-white rounded-xl p-4">
+            <div className="flex items-center justify-between mb-3">
+              <h3 className="text-sm font-bold text-gray-900">招投标</h3>
+              <span className="text-xs text-gray-500">共4条</span>
             </div>
-            {[
-              { name: '张建国', role: '执行董事、总经理' },
-              { name: '李明华', role: '监事' },
-              { name: '王志远', role: '副总经理' },
-              { name: '刘芳', role: '财务总监' },
-              { name: '陈静', role: '行政总监' },
-              { name: '赵强', role: '技术总监' },
-            ].map((person, idx) => (
-              <div key={idx} className="flex items-center gap-3 py-2 border-b border-gray-100 last:border-0">
-                <div className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-xs font-medium text-gray-600">
-                  {person.name.charAt(0)}
+            <div className="space-y-2">
+              {[
+                { name: '2025年度智慧物流园区建设项目', budget: '580万', date: '2025-11-20', tag: '工程' },
+                { name: '城市供应链数字化平台采购', budget: '320万', date: '2025-08-15', tag: '报案' },
+                { name: '冷链物流仓储设备招标', budget: '150万', date: '2025-06-10', tag: '新车' },
+                { name: '跨境贸易物流服务采购', budget: '260万', date: '2025-03-22', tag: '企康' },
+              ].map((bid, idx) => (
+                <div key={idx} className="py-2 border-b border-gray-100 last:border-0">
+                  <div className="text-xs font-medium text-gray-900 mb-1 flex items-center gap-2">
+                    {bid.name}
+                    <span className={`text-[10px] font-medium px-1.5 py-0.5 rounded shrink-0 ${
+                      bid.tag === '工程' ? 'bg-blue-50 text-blue-600' :
+                      bid.tag === '报案' ? 'bg-orange-50 text-orange-600' :
+                      bid.tag === '新车' ? 'bg-green-50 text-green-600' :
+                      'bg-purple-50 text-purple-600'
+                    }`}>{bid.tag}</span>
+                  </div>
+                  <div className="flex items-center gap-3 text-[10px] text-gray-500">
+                    <span>项目预算：{bid.budget}</span>
+                    <span>发布时间：{bid.date}</span>
+                  </div>
                 </div>
-                <div>
-                  <div className="text-xs font-medium text-gray-900">{person.name}</div>
-                  <div className="text-[10px] text-gray-500">{person.role}</div>
-                </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
         </section>
 
@@ -198,13 +246,18 @@ export default function BasicInfo({ client, onBack }: BasicInfoProps) {
               <span className="text-xs text-gray-500">共2家</span>
             </div>
             {[
-              { name: '北京国控科技有限公司朝阳分公司', location: '北京市朝阳区' },
-              { name: '北京国控科技有限公司海淀分公司', location: '北京市海淀区' },
+              { name: '北京国控科技有限公司朝阳分公司', status: '存续', manager: '张建国' },
+              { name: '北京国控科技有限公司海淀分公司', status: '注销', manager: '李明华' },
             ].map((branch, idx) => (
               <div key={idx} className="flex items-center justify-between py-2 border-b border-gray-100 last:border-0">
                 <div>
-                  <div className="text-xs font-medium text-gray-900">{branch.name}</div>
-                  <div className="text-[10px] text-gray-500">{branch.location}</div>
+                  <div className="text-xs font-medium text-gray-900 flex items-center gap-2">
+                    {branch.name}
+                    <span className={`text-[10px] font-medium px-1.5 py-0.5 rounded ${
+                      branch.status === '存续' ? 'bg-green-50 text-green-600' : 'bg-gray-100 text-gray-500'
+                    }`}>{branch.status}</span>
+                  </div>
+                  <div className="text-[10px] text-gray-500">负责人：{branch.manager}</div>
                 </div>
                 <ChevronRight className="w-4 h-4 text-gray-400" />
               </div>
@@ -217,13 +270,37 @@ export default function BasicInfo({ client, onBack }: BasicInfoProps) {
           <div className="bg-white rounded-xl p-4">
             <div className="flex items-center justify-between mb-3">
               <h3 className="text-sm font-bold text-gray-900">处罚信息</h3>
-              <span className="text-xs text-gray-500">共0条</span>
+              <span className="text-xs text-gray-500">共3条</span>
             </div>
-            <div className="flex flex-col items-center justify-center py-8 text-center">
-              <div className="w-12 h-12 rounded-full bg-green-50 flex items-center justify-center mb-3">
-                <Flag className="w-6 h-6 text-green-500" />
-              </div>
-              <p className="text-xs text-gray-500">暂无处罚信息</p>
+            <div className="space-y-3">
+              {[
+                { id: 'CF-2025-00123', content: '未按规定期限公示年度报告', agency: '北京市市场监督管理局', decisionDate: '2025-08-15', publishDate: '2025-08-20' },
+                { id: 'CF-2024-00567', content: '违反安全生产管理规定', agency: '北京市应急管理局', decisionDate: '2024-11-03', publishDate: '2024-11-08' },
+                { id: 'CF-2024-00345', content: '未依法为从业人员缴纳工伤保险费', agency: '北京市人力资源和社会保障局', decisionDate: '2024-06-22', publishDate: '2024-06-28' },
+              ].map((penalty, idx) => (
+                <div key={idx} className="bg-gray-50 rounded-xl p-3 space-y-1.5">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[10px] text-gray-500">处罚编号</span>
+                    <span className="text-xs font-medium text-gray-900">{penalty.id}</span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-[10px] text-gray-500">处罚内容</span>
+                    <span className="text-xs text-gray-900 text-right max-w-[200px]">{penalty.content}</span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-[10px] text-gray-500">处罚机构</span>
+                    <span className="text-xs text-gray-900">{penalty.agency}</span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-[10px] text-gray-500">决定日期</span>
+                    <span className="text-xs text-gray-900">{penalty.decisionDate}</span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-[10px] text-gray-500">发布日期</span>
+                    <span className="text-xs text-gray-900">{penalty.publishDate}</span>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
         </section>
